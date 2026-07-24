@@ -1,0 +1,266 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account authentication API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- name: authentication
+  x-displayName: Authentication
+paths:
+  /v1/auth:emailPasswordResetToken:
+    post:
+      description: Send a password reset link to the provided email address, if that email matches a registered user.
+      operationId: AuthEmailPasswordResetToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthEmailPasswordResetTokenRequest'
+      responses:
+        '204':
+          description: Request completed successfully.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      summary: Email Password Reset Token
+      tags:
+      - authentication
+  /v1/auth:getUser:
+    get:
+      description: Retrieve the profile of the authenticated user.
+      operationId: AuthGetUser
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The authenticated user could not be located within our records. Please contact support@rigetti.com if you reach this error.
+      security:
+      - JWTBearer: []
+      summary: Get User
+      tags:
+      - authentication
+  /v1/auth:resetPassword:
+    parameters: []
+    post:
+      description: Reset the password using the user's existing password. Note, this is an authenticated route.
+      operationId: AuthResetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthResetPasswordRequest'
+        required: true
+      responses:
+        '204':
+          description: Password successfully reset.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Reset Password
+      tags:
+      - authentication
+  /v1/auth:resetPasswordWithToken:
+    parameters: []
+    post:
+      description: Complete the forgot password flow, resetting the new password in exchange for an emailed token.
+      operationId: AuthResetPasswordWithToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthResetPasswordWithTokenRequest'
+        required: true
+      responses:
+        '204':
+          description: Password successfully reset.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: No account exists for the requested email.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      summary: Reset Password With Token
+      tags:
+      - authentication
+components:
+  schemas:
+    AuthResetPasswordRequest:
+      properties:
+        newPassword:
+          type: string
+        oldPassword:
+          type: string
+      required:
+      - oldPassword
+      - newPassword
+      type: object
+    User:
+      properties:
+        createdTime:
+          format: date-time
+          type: string
+        id:
+          type: integer
+        idpId:
+          type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+      required:
+      - id
+      - idpId
+      - createdTime
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    UserProfile:
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - email
+      - firstName
+      - lastName
+      - organization
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    AuthEmailPasswordResetTokenRequest:
+      properties:
+        email:
+          type: string
+      required:
+      - email
+      type: object
+    AuthResetPasswordWithTokenRequest:
+      description: Token may be requested with AuthEmailPasswordResetToken.
+      properties:
+        newPassword:
+          type: string
+        token:
+          type: string
+      required:
+      - token
+      - newPassword
+      type: object
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors

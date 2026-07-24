@@ -1,0 +1,114 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account Rigetti QCS API API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- name: Rigetti QCS API
+paths:
+  /:
+    get:
+      description: Retrieve the health status of the API
+      operationId: GetHealth
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: Critical services are healthy.
+      tags:
+      - Rigetti QCS API
+  /v1/:
+    get:
+      deprecated: true
+      description: Endpoint to return a status 200 for load balancer health checks
+      operationId: HealthCheckDeprecated
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      summary: Health Check
+      tags:
+      - Rigetti QCS API
+components:
+  schemas:
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    Health:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          example: PASS
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors

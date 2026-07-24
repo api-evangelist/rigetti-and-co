@@ -1,0 +1,428 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account endpoints API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- description: The Endpoint is the means of access to a Quantum Processor.
+  name: endpoints
+  x-displayName: Quantum Processor Endpoints
+paths:
+  /v1/endpoints:
+    get:
+      description: List all endpoints, optionally filtering by attribute.
+      operationId: ListEndpoints
+      parameters:
+      - description: Filtering logic specified using [rule-engine](https://zerosteiner.github.io/rule-engine/syntax.html) grammar
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: Filtering logic specified using [rule-engine](https://zerosteiner.github.io/rule-engine/syntax.html) grammar
+          title: Filter
+          type: string
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          default: 10
+          title: Pagesize
+          type: integer
+      - in: query
+        name: pageToken
+        required: false
+        schema:
+          title: Pagetoken
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEndpointsResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: List Endpoints
+      tags:
+      - endpoints
+    post:
+      description: Create an endpoint associated with your user account.
+      operationId: CreateEndpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEndpointParameters'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: Successful Response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: Create Endpoint
+      tags:
+      - endpoints
+  /v1/endpoints/{endpointId}:
+    delete:
+      description: Delete an endpoint, releasing its resources. This operation is not reversible.
+      operationId: DeleteEndpoint
+      parameters:
+      - in: path
+        name: endpointId
+        required: true
+        schema:
+          title: Endpoint ID
+          type: string
+      responses:
+        '204':
+          description: Successful Response
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: Delete Endpoint
+      tags:
+      - endpoints
+    get:
+      description: Retrieve a specific endpoint by its ID.
+      operationId: GetEndpoint
+      parameters:
+      - in: path
+        name: endpointId
+        required: true
+        schema:
+          title: Endpoint ID
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: Successful Response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: Get Endpoint
+      tags:
+      - endpoints
+  /v1/endpoints/{endpointId}:restart:
+    post:
+      description: Restart an entire endpoint or a single component within an endpoint.
+      operationId: RestartEndpoint
+      parameters:
+      - in: path
+        name: endpointId
+        required: true
+        schema:
+          title: Endpoint ID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestartEndpointRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: Restart Endpoint
+      tags:
+      - endpoints
+  /v1/quantumProcessors/{quantumProcessorId}/endpoints:getDefault:
+    get:
+      description: 'Retrieve the endpoint set as "default" for the given Quantum Processor.
+
+
+        If no endpoint is set as the default, return "not found."'
+      operationId: GetDefaultEndpoint
+      parameters:
+      - description: 'Public identifier for a quantum processor [example: Aspen-1]'
+        in: path
+        name: quantumProcessorId
+        required: true
+        schema:
+          description: 'Public identifier for a quantum processor [example: Aspen-1]'
+          title: Quantum Processor ID
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: Successful Response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Unprocessable Entity
+      security:
+      - JWTBearer: []
+      summary: Get Default Endpoint
+      tags:
+      - endpoints
+components:
+  schemas:
+    CreateEndpointParameters:
+      description: A publicly available set of parameters for defining an endpoint.
+      properties:
+        datacenters:
+          description: Which datacenters are available for endpoint placement. Defaults to berkeley-775
+          items:
+            $ref: '#/components/schemas/NomadJobDatacenters'
+          title: Datacenters
+          type: array
+        quantumProcessorIds:
+          description: Public identifiers for quantum processors served by this endpoint.
+          items:
+            type: string
+          title: Quantum Processor IDs
+          type: array
+      title: CreateEndpointParameters
+      type: object
+    RestartEndpointRequest:
+      properties:
+        componentName:
+          description: Individual component to restart
+          title: Component Name
+          type: string
+      title: RestartEndpointRequest
+      type: object
+    ListEndpointsResponse:
+      properties:
+        endpoints:
+          items:
+            $ref: '#/components/schemas/Endpoint'
+          title: Endpoints
+          type: array
+        nextPageToken:
+          description: Opaque token indicating the start of the next page of results to return; do not decode
+          title: Next Page Token
+          type: string
+      required:
+      - endpoints
+      title: ListEndpointsResponse
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    Endpoint:
+      description: An Endpoint is the entry point for remote access to a QuantumProcessor.
+      properties:
+        address:
+          description: Network address at which the endpoint is locally reachable
+          nullable: true
+          title: Address
+          type: string
+        addresses:
+          allOf:
+          - $ref: '#/components/schemas/EndpointAddresses'
+          description: Addresses at which this endpoint is reachable over the network
+          title: Endpoint Addresses
+        datacenter:
+          description: Datacenter within which the endpoint is deployed
+          title: Datacenter
+          type: string
+        healthy:
+          description: Whether the endpoint is operating as intended
+          title: Healthy
+          type: boolean
+        id:
+          description: Unique, opaque identifier for the endpoint
+          title: Endpoint ID
+          type: string
+        mock:
+          description: Whether the endpoint serves simulated or substituted data for testing purposes
+          title: Mock
+          type: boolean
+        quantumProcessorIds:
+          description: Public identifiers for quantum processors served by this endpoint.
+          items:
+            type: string
+          title: Quantum Processor IDs
+          type: array
+      required:
+      - id
+      - addresses
+      - healthy
+      - mock
+      title: Endpoint
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    NomadJobDatacenters:
+      description: An enumeration.
+      enum:
+      - berkeley-775
+      - fremont-fab
+      - rigetti-gb-1
+      title: NomadJobDatacenters
+      type: string
+    EndpointAddresses:
+      description: Addresses at which an endpoint is reachable over the network.
+      properties:
+        grpc:
+          title: Grpc
+          type: string
+        rpcq:
+          title: Rpcq
+          type: string
+      title: EndpointAddresses
+      type: object
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors

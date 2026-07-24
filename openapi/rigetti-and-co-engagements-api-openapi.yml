@@ -1,0 +1,269 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account engagements API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- description: The Engagement is the authorization mechanism for access to the Quantum Processor.
+  name: engagements
+  x-displayName: Engagements
+paths:
+  /v1/engagements:
+    post:
+      description: "Create a new engagement using the specified parameters.\n\nAt least one of the following parameters must be supplied:\n- **endpointId**: The ID of the endpoint on which to engage.\n- **quantumProcessorId**: The ID of the quantum processor on which to engage, allowing the\n    service to select a default endpoint. Ignored if **endpointId** is set."
+      operationId: CreateEngagement
+      parameters:
+      - description: Either the client's user ID or the name of a group on behalf of which the client wishes to engage. May be overriden by accountId set in body.
+        in: header
+        name: x-qcs-account-id
+        required: false
+        schema:
+          description: Either the client's user ID or the name of a group on behalf of which the client wishes to engage. May be overriden by accountId set in body.
+          title: X-Qcs-Account-Id
+          type: string
+      - description: Indicates whether the engagement request should be made for the user or on behalf of a group. May be overriden by accountType set in body.
+        in: header
+        name: x-qcs-account-type
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/AccountType'
+          description: Indicates whether the engagement request should be made for the user or on behalf of a group. May be overriden by accountType set in body.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEngagementRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngagementWithCredentials'
+          description: Successful Response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Validation error
+        '503':
+          description: Endpoint is temporarily unavailable, try again later.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying
+              schema:
+                type: integer
+      security:
+      - JWTBearer: []
+      summary: Create Engagement
+      tags:
+      - engagements
+components:
+  schemas:
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    AccountType:
+      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
+      default: user
+      enum:
+      - group
+      - user
+      type: string
+    EngagementWithCredentials:
+      description: An engagement is the authorization of a user to execute work on a Quantum Processor Endpoint.
+      properties:
+        accountId:
+          description: User ID or group name on behalf of which the engagement is made.
+          title: Account Id
+          type: string
+        accountType:
+          allOf:
+          - $ref: '#/components/schemas/AccountType'
+          description: Indicates whether the grant was made on behalf of a single user or group.
+          title: Account Type
+        address:
+          description: The network address of the endpoint to which this engagement grants access
+          title: Address
+          type: string
+        credentials:
+          $ref: '#/components/schemas/EngagementCredentials'
+        endpointId:
+          description: The ID of the endpoint to which this engagement grants access
+          title: Endpoint ID
+          type: string
+        expiresAt:
+          description: Time after which the engagement is no longer valid. Given in RFC3339 format.
+          title: Expiration Time
+          type: string
+        minimumPriority:
+          description: The minimum priority value allowed for execution
+          title: Minimum Priority
+          type: integer
+        quantumProcessorIds:
+          default: []
+          description: The quantum processors for which this engagement enables access and execution
+          items:
+            type: string
+          title: Quantum Processor IDs
+          type: array
+        tags:
+          description: Tags recorded on QPU requests and recorded on usage records.
+          items:
+            type: string
+          title: Tags
+          type: array
+        userId:
+          title: User ID of client
+          type: string
+      required:
+      - address
+      - endpointId
+      - expiresAt
+      - userId
+      - credentials
+      title: EngagementWithCredentials
+      type: object
+    EngagementCredentials:
+      description: 'Credentials are the ZeroMQ CURVE Keys used to encrypt the connection with the Quantum Processor
+
+        Endpoint.'
+      properties:
+        clientPublic:
+          title: Client Public Key
+          type: string
+        clientSecret:
+          title: Client Secret Key
+          type: string
+        serverPublic:
+          title: Server Public Key
+          type: string
+      required:
+      - clientPublic
+      - clientSecret
+      - serverPublic
+      title: EngagementCredentials
+      type: object
+    CreateEngagementRequest:
+      properties:
+        accountId:
+          description: Either the client's user ID or the name of a group on behalf of which the client wishes to engage. This value will override any values set in the headers.
+          title: Account Id
+          type: string
+        accountType:
+          allOf:
+          - $ref: '#/components/schemas/AccountType'
+          description: Indicates whether the engagement request should be made for the user or on behalf of a group. This value will override any values set in the headers.
+          title: Account Type
+        endpointId:
+          description: Unique, opaque identifier for the endpoint
+          title: Endpoint ID
+          type: string
+        quantumProcessorId:
+          description: 'Public identifier for a quantum processor [example: Aspen-1]'
+          title: Quantum Processor ID
+          type: string
+        tags:
+          description: Tags recorded on QPU requests, which reporting services may later use for querying usage records.
+          items:
+            type: string
+          title: Tags
+          type: array
+      title: CreateEngagementRequest
+      type: object
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors

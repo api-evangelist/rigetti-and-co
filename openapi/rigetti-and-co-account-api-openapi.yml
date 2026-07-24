@@ -1,0 +1,1496 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- name: account
+  x-displayName: Account
+paths:
+  /v1/groups/{groupName}/balance:
+    get:
+      description: Retrieve the balance of the requested QCS group account.
+      operationId: GetGroupBalance
+      parameters:
+      - description: URL encoded name of group for which to retrieve account balance.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+          description: Request completed successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client not authorized to complete request.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: QCS group account does not exist.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Get Group Balance
+      tags:
+      - account
+  /v1/groups/{groupName}/billingCustomer:
+    get:
+      description: Retrieve billing customer for a QCS group account.
+      operationId: GetGroupBillingCustomer
+      parameters:
+      - description: URL-encoded name of group.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingCustomer'
+          description: Billing customer retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view account billing customer.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/groups/{groupName}/billingInvoices:
+    get:
+      description: Retrieve billing invoices for a QCS group account.
+      operationId: ListGroupBillingInvoices
+      parameters:
+      - description: URL-encoded name of group.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoicesResponse'
+          description: Billing invoices retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view group billing invoices.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/groups/{groupName}/billingInvoices/{billingInvoiceId}/lines:
+    get:
+      description: Retrieve billing invoice lines for a QCS group account's invoice.
+      operationId: ListGroupBillingInvoiceLines
+      parameters:
+      - description: URL-encoded name of group.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      - description: URL-encoded billing invoice id.
+        in: path
+        name: billingInvoiceId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoiceLinesResponse'
+          description: Billing invoice lines retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view group billing invoice lines.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/groups/{groupName}/billingInvoices:getUpcoming:
+    get:
+      description: Retrieve upcoming invoice for QCS group billing customer.
+      operationId: GetGroupUpcomingBillingInvoice
+      parameters:
+      - description: URL-encoded name of group.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingUpcomingInvoice'
+          description: Billing invoice retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view group billing invoice.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/groups/{groupName}/billingInvoices:listUpcomingLines:
+    get:
+      description: List invoice lines for QCS group billing customer upcoming invoice.
+      operationId: ListGroupUpcomingBillingInvoiceLines
+      parameters:
+      - description: URL-encoded name of group.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoiceLinesResponse'
+          description: Billing invoice lines retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view group billing invoice lines.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/groups/{groupName}/users:
+    get:
+      description: List users belonging to a group. Note, group membership may take several minutes to update within our identity provider. After adding or removing a user to or from a group, please allow up to 60 minutes for changes to be reflected.
+      operationId: ListGroupUsers
+      parameters:
+      - description: URL encoded name of group for which to retrieve users.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListGroupUsersResponse'
+          description: Group users successfully retrieved.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested group does not exist.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: List users belonging to a group
+      tags:
+      - account
+  /v1/groups:addUser:
+    post:
+      description: Add a user to a group. Note, group membership may take several minutes to update within our identity provider. After adding a user to a group, please allow up to 60 minutes for changes to be reflected.
+      operationId: AddGroupUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddGroupUserRequest'
+        required: true
+      responses:
+        '204':
+          description: User successfully added to group.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group or user does not exist.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Add user to a group
+      tags:
+      - account
+  /v1/groups:removeUser:
+    post:
+      description: Remove a user from a group. Note, group membership may take several minutes to update within our identity provider. After removing a user from a group, please allow up to 60 minutes for changes to be reflected.
+      operationId: RemoveGroupUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveGroupUserRequest'
+        required: true
+      responses:
+        '204':
+          description: User successfully removed from group.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group does not exist.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed, possibly because the user does not belong to the group.
+      security:
+      - JWTBearer: []
+      summary: Remove user from a group.
+      tags:
+      - account
+  /v1/users/{userId}/balance:
+    get:
+      description: Retrieve the balance of the requested QCS user account.
+      operationId: GetUserBalance
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+          description: Request completed successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client not authorized to complete request.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: QCS user account does not exist.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Get User Balance
+      tags:
+      - account
+  /v1/users/{userId}/billingCustomer:
+    get:
+      description: Retrieve billing customer for a QCS user account.
+      operationId: GetUserBillingCustomer
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingCustomer'
+          description: Billing customer retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view user billing customer.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User billing customer does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/billingInvoices:
+    get:
+      description: Retrieve billing invoices for a QCS user account.
+      operationId: ListUserBillingInvoices
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoicesResponse'
+          description: Billing invoices retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view user billing invoices.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User billing customer does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/billingInvoices/{billingInvoiceId}/lines:
+    get:
+      description: Retrieve billing invoice lines for a QCS user account's invoice.
+      operationId: ListUserBillingInvoiceLines
+      parameters:
+      - description: URL-encoded QCS id of user. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      - description: URL-encoded billing invoice id.
+        in: path
+        name: billingInvoiceId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoiceLinesResponse'
+          description: Billing invoice lines retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view user billing invoice lines.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/billingInvoices:getUpcoming:
+    get:
+      description: Retrieve upcoming invoice for QCS user billing customer.
+      operationId: GetUserUpcomingBillingInvoice
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingUpcomingInvoice'
+          description: Upcoming billing invoice retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view user billing invoice.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/billingInvoices:listUpcomingLines:
+    get:
+      description: List invoice lines for QCS user billing customer upcoming invoice.
+      operationId: ListUserUpcomingBillingInvoiceLines
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAccountBillingInvoiceLinesResponse'
+          description: Billing invoice lines retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to view user's billing invoice lines.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Group billing customer or invoice does not exist.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/eventBillingPrices:get:
+    post:
+      description: Retrieve `EventBillingPrice` for a user for a specific event. If no price is configured this operation will return a default `EventBillingPrice` for the specified `product`.
+      operationId: GetUserEventBillingPrice
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetAccountEventBillingPriceRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventBillingPriceRate'
+          description: Retrieved `EventBillingPrice` successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client is not authorized to retrieve the `EventBillingPrice`.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The `EventBillingPrice` does not exist for the specified event. Because the server guarantees prices for events, the server will trigger alerts whenever returning this response.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request parameter validation error.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/users/{userId}/groups:
+    get:
+      description: List QCS groups for the requested user
+      operationId: ListUserGroups
+      parameters:
+      - description: The user's QCS id. May be found as `idpId` in the `AuthGetUser` API call.
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListGroupsResponse'
+          description: Successfully retrieved groups.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: List QCS groups for the requested user
+      tags:
+      - account
+  /v1/users:activate:
+    post:
+      description: Activate a user, completing an invitation request.
+      operationId: ActivateUser
+      summary: Activate User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateUserRequest'
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Request completed successfully.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      tags:
+      - account
+  /v1/viewer/announcements:
+    get:
+      description: List all announcements relevant to the authenticating user. By default, does not include dismissed announcements.
+      operationId: ListViewerAnnouncements
+      parameters:
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      - name: includeDismissed
+        description: Include dismissed announcements in the response.
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementsResponse'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/viewer/announcements/{announcementId}:
+    delete:
+      description: Dismiss an announcement for an authenticating user, indicating that they do not want to see it again.
+      operationId: DismissViewerAnnouncement
+      parameters:
+      - name: announcementId
+        description: The ID of an existing announcement.
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown announcement ID.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/viewer/userProfile:
+    put:
+      description: Update the profile of the authenticated user.
+      operationId: UpdateViewerUserProfile
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateViewerUserProfileRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The authenticated user could not be located within our records. Please contact support@rigetti.com if you reach this error.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be validated.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+  /v1/viewer/onboardingCompleted:
+    get:
+      description: Get the onboarding status of the authenticated user.
+      operationId: GetViewerUserOnboardingCompleted
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewerUserOnboardingCompleted'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+    put:
+      description: Update the onboarding status of the authenticated user.
+      operationId: PutViewerUserOnboardingCompleted
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewerUserOnboardingCompleted'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewerUserOnboardingCompleted'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+      security:
+      - JWTBearer: []
+      tags:
+      - account
+components:
+  schemas:
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    AnnouncementsResponse:
+      description: A page of announcements.
+      properties:
+        nextPageToken:
+          type: string
+        announcements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+      required:
+      - announcements
+    BillingProduct:
+      description: 'A QCS service product, such as reservation time or on-demand execution.
+
+        One product can be associated with multiple prices, which may be associated
+
+        to particular resources or customers.
+
+        '
+      properties:
+        description:
+          maxLength: 5000
+          type: string
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        name:
+          description: This name will show up on associated invoice line item descriptions.
+          maxLength: 5000
+          type: string
+        object:
+          description: This object's type, which is always `product`.
+          enum:
+          - product
+          type: string
+          x-enum-varnames:
+          - productObject
+        unitLabel:
+          description: 'A label for units of this product which appears on customer
+
+            invoices, e.g. "microseconds" for on-demand execution or "minutes" for
+
+            qpu reservations.
+
+            '
+          maxLength: 5000
+          type: string
+      required:
+      - id
+      - name
+      - object
+      title: Billing Product
+      type: object
+    BillingPrice:
+      description: 'A configuration for calculating the cost of `BillingProduct` usage
+
+        based on quantity,
+
+        and when that cost should be added as an invoice item.
+
+        '
+      properties:
+        active:
+          description: Whether the price can be used for new purchases.
+          type: boolean
+        billingScheme:
+          $ref: '#/components/schemas/BillingPriceScheme'
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        object:
+          description: This object's type, which is always `price`.
+          enum:
+          - price
+          type: string
+        priceType:
+          description: 'Use `one_time` to invoice immediately based on a single usage
+
+            report, e.g. purchasing a QPU reservation.
+
+            Use `recurring` to aggregate usage reports over an interval and then invoice
+
+            once based on `BillingPriceRecurrence`, e.g. on-demand QPU usage.
+
+            '
+          enum:
+          - one_time
+          - recurring
+          type: string
+        product:
+          $ref: '#/components/schemas/BillingProduct'
+        recurring:
+          $ref: '#/components/schemas/BillingPriceRecurrence'
+        tiers:
+          description: 'Configure how price should be calculated based on quantity
+
+            when `billingScheme=tiered`.
+
+            Requires at least two tiers.
+
+            '
+          items:
+            $ref: '#/components/schemas/BillingPriceTier'
+          type: array
+        tiersMode:
+          $ref: '#/components/schemas/BillingPriceTiersMode'
+        unitAmountDecimal:
+          description: 'The amount of `currency` to charge per quantity used.
+
+            Requires that `billingScheme=per_unit`.
+
+            '
+          format: double
+          type: number
+      required:
+      - id
+      title: Billing Price
+      type: object
+    BillingPriceScheme:
+      description: 'Use `per_unit` to charge a linear rate per quantity (recommended).
+
+        Use `tiered` to charge a dynamic rate based on quantity as defined in the
+
+        `tiers` of a `BillingPice`.
+
+        '
+      enum:
+      - per_unit
+      - tiered
+      type: string
+    ListGroupUsersResponse:
+      properties:
+        nextPageToken:
+          type: string
+        users:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+      required:
+      - users
+      type: object
+    ActivateUserRequest:
+      properties:
+        credentials:
+          $ref: '#/components/schemas/UserCredentials'
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+        token:
+          description: Verification token provided in invitation email.
+          type: string
+      required:
+      - profile
+      - credentials
+      - token
+      type: object
+    ListAccountBillingInvoicesResponse:
+      properties:
+        billingInvoices:
+          items:
+            $ref: '#/components/schemas/BillingInvoice'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - billingInvoices
+      type: object
+    BillingCustomer:
+      description: Billing account information of a particular QCS account.
+      properties:
+        email:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - email
+      title: Billing Customer
+      type: object
+    EventBillingPriceRate:
+      description: 'The per-unit price associated with a particular QCS service product,
+
+        and (optionally) with a particular quantum processor.
+
+        '
+      properties:
+        id:
+          type: integer
+        product:
+          $ref: '#/components/schemas/Product'
+        quantumProcessorId:
+          description: If unset, this per-unit price applies to any quantum processor.
+          type: string
+        unitAmountDecimal:
+          description: The unit amount in currency to be charged.
+          format: double
+          type: number
+        unitLabel:
+          description: Human-readable unit label infomation.
+          type: string
+      required:
+      - id
+      - product
+      type: object
+    Group:
+      properties:
+        createdTime:
+          format: date-time
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        lastMembershipUpdatedTime:
+          format: date-time
+          type: string
+        name:
+          type: string
+        updatedTime:
+          format: date-time
+          type: string
+      required:
+      - id
+      - name
+      - description
+      - createdTime
+      - updatedTime
+      - lastMembershipUpdatedTime
+      type: object
+    BillingInvoiceStatus:
+      enum:
+      - draft
+      - open
+      - paid
+      - uncollectible
+      - void
+      type: string
+    ListAccountBillingInvoiceLinesResponse:
+      properties:
+        billingInvoiceLines:
+          items:
+            $ref: '#/components/schemas/BillingInvoiceLine'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - billingInvoiceLines
+      type: object
+    BillingPriceTiersMode:
+      description: 'Use `graduated` to apply each tier calculation to the portion
+
+        of relevant quantity, e.g. how US federal tax brackets work.
+
+        Use `volume` to apply the highest relevant tier to the entire quantity.
+
+        '
+      enum:
+      - graduated
+      - volume
+      type: string
+    ViewerUserOnboardingCompleted:
+      properties:
+        onboardingCompleted:
+          type: boolean
+      required:
+      - onboardingCompleted
+    BillingInvoiceLine:
+      description: A line item on an invoice representing a particular purchase (such as a reservation) or aggregate usage for the invoice period.
+      properties:
+        amount:
+          type: integer
+        description:
+          type: string
+        id:
+          type: string
+        invoiceItem:
+          type: string
+        lineItemType:
+          enum:
+          - invoiceitem
+          - subscription
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+        price:
+          $ref: '#/components/schemas/BillingPrice'
+        quantity:
+          type: integer
+        subscription:
+          type: string
+        subscriptionItem:
+          type: string
+      required:
+      - id
+      - description
+      - amount
+      - quantity
+      - lineItemType
+      - metadata
+      type: object
+    ListGroupsResponse:
+      properties:
+        groups:
+          items:
+            $ref: '#/components/schemas/Group'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - groups
+      type: object
+    UserCredentials:
+      properties:
+        password:
+          properties:
+            value:
+              type: string
+          required:
+          - value
+          type: object
+      required:
+      - password
+      type: object
+    AccountBalance:
+      description: Balance of QCS account in billing system. Note, a negative balance signifies that the account has QCS credits to spend. A positive account balance signifies that the account has no additional QCS credits to spend. The QCS UI may display these quantities in absolute or negative value and provide a clear meaning to the significance.
+      properties:
+        balance:
+          description: The balance in cents USD.
+          type: integer
+      required:
+      - balance
+      type: object
+    User:
+      properties:
+        createdTime:
+          format: date-time
+          type: string
+        id:
+          type: integer
+        idpId:
+          type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+      required:
+      - id
+      - idpId
+      - createdTime
+      type: object
+    BillingPriceRecurrence:
+      description: 'How to invoice for the usage of a product that has a recurring
+
+        (subscription) price.
+
+        '
+      properties:
+        aggregateUsage:
+          description: 'How to determine the aggregate usage over the `interval` when
+
+            `usageType=metered`.
+
+            Using `sum` is recommended.
+
+            '
+          enum:
+          - last_during_period
+          - last_ever
+          - max
+          - sum
+          type: string
+        interval:
+          description: 'The frequency at which recurring usage should be billed.
+
+            Using `month` is recommended.
+
+            '
+          enum:
+          - day
+          - month
+          - week
+          - year
+          type: string
+        intervalCount:
+          description: 'The number of `interval` units between each billing cycle.
+
+            For example, `interval=month` and `intervalCount=1` means every month
+
+            (recommended).
+
+            '
+          format: int64
+          type: integer
+        usageType:
+          description: 'Use `metered` to calculate a dynamic quantity based on reported
+
+            usage records (recommended).
+
+            Use `licensed` when you provide a fixed quantity, e.g. a TV subscription.
+
+            '
+          enum:
+          - licensed
+          - metered
+          type: string
+      required:
+      - interval
+      title: Billing Price Recurrence
+      type: object
+    RemoveGroupUserRequest:
+      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
+      properties:
+        groupId:
+          type: string
+        groupName:
+          type: string
+        userEmail:
+          type: string
+        userId:
+          type: string
+      type: object
+    UserProfile:
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - email
+      - firstName
+      - lastName
+      - organization
+      type: object
+    UpdateViewerUserProfileRequest:
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - firstName
+      - lastName
+      - organization
+      type: object
+    BillingInvoice:
+      allOf:
+      - $ref: '#/components/schemas/BillingUpcomingInvoice'
+      - description: A finalized invoice for the current invoice period.
+        properties:
+          id:
+            type: string
+        required:
+        - id
+        - periodEnd
+        - periodStart
+        - startingBalance
+        - status
+        - subtotal
+        - tax
+        - total
+        type: object
+      description: A finalized billing invoice.
+      type: object
+    AddGroupUserRequest:
+      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
+      properties:
+        groupId:
+          type: string
+        groupName:
+          type: string
+        userEmail:
+          type: string
+        userId:
+          type: string
+      type: object
+    BillingPriceTier:
+      description: 'Use `flatAmount` to charge a fixed amount for the quantity relevant
+
+        to the tier.
+
+        Use `unitAmount` to charge a linear rate for the quantity relevant to the
+
+        tier.
+
+        Only one field between `flatAmount`, `flatAmountDecimal`, `unitAmount`, or
+
+        `unitAmountDecimal` should be set.
+
+        '
+      properties:
+        flatAmount:
+          format: int64
+          type: integer
+        flatAmountDecimal:
+          format: double
+          type: number
+        unitAmount:
+          format: int64
+          type: integer
+        unitAmountDecimal:
+          format: double
+          type: number
+        upTo:
+          description: 'The upper bound of product quantity relevant to this tier.
+
+            The highest tier should be open ended, represented by an `upTo` value
+
+            of `-1`.
+
+            '
+          format: int64
+          type: integer
+      required:
+      - upTo
+      title: tier
+      type: object
+    Product:
+      description: The set of known QCS service products.
+      enum:
+      - reservationCreation
+      - qpuJobCompletion
+      - qpuJobTime
+      type: string
+    Announcement:
+      description: An announcement to be displayed to users.
+      properties:
+        id:
+          type: integer
+        contentHtml:
+          description: The HTML content of the announcement to be displayed.
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: The RFC3339-format time the announcement was created.
+        active:
+          type: boolean
+          description: Whether the announcement is currently active.
+      required:
+      - id
+      - contentHtml
+      - createdAt
+      - active
+    BillingUpcomingInvoice:
+      description: An unfinalized billing invoice.
+      properties:
+        periodEnd:
+          format: date-time
+          type: string
+        periodStart:
+          format: date-time
+          type: string
+        startingBalance:
+          type: integer
+        status:
+          $ref: '#/components/schemas/BillingInvoiceStatus'
+        subtotal:
+          type: integer
+        tax:
+          type: integer
+        total:
+          type: integer
+      required:
+      - periodEnd
+      - periodStart
+      - startingBalance
+      - status
+      - subtotal
+      - tax
+      - total
+      type: object
+    GetAccountEventBillingPriceRequest:
+      description: Property `quantumProcessorId` is currently required for all `product`s, however in the future there may be `product`s that do not require a `quantumProcessorId`.
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        quantumProcessorId:
+          maxLength: 1000
+          type: string
+      required:
+      - product
+      type: object
+  parameters:
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+    pageTokenParam:
+      description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
+      in: query
+      name: pageToken
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors

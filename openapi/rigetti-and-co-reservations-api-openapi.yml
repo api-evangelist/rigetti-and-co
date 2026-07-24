@@ -1,0 +1,678 @@
+openapi: 3.0.2
+info:
+  x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
+  contact:
+    email: support@rigetti.com
+    url: https://rigetti.zendesk.com
+  title: Rigetti QCS account reservations API
+  version: 2020-07-31
+  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+servers:
+- description: Rigetti API
+  url: https://api.qcs.rigetti.com
+tags:
+- description: Find existing time on a Rigetti QPU and reserve it.
+  name: reservations
+  x-displayName: Reservations
+paths:
+  /v1/calendars/{quantumProcessorId}:
+    get:
+      description: Get calendar details for the requested quantum processor.
+      operationId: GetQuantumProcessorCalendar
+      parameters:
+      - in: path
+        name: quantumProcessorId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuantumProcessorCalendar'
+          description: Request completed successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Client not authorized to complete request.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested quantum processor does not exist.
+      summary: Get Quantum Processor Calendar
+      tags:
+      - reservations
+      security:
+      - JWTBearer: []
+  /v1/groups/{groupName}/reservations:
+    get:
+      description: 'List existing reservations for the requested group.
+
+
+        Available filter fields include:
+
+
+        * `startTime` - timestamp
+
+        * `endTime` - timestamp
+
+        * `createdTime` - timestamp
+
+        * `price` - integer
+
+        * `quantumProcessorId` - string
+
+
+        Available order fields include:
+
+
+        * `startTime` - timestamp
+
+        * `endTime` - timestamp
+
+        * `createdTime` - timestamp
+
+        * `price` - integer
+
+        '
+      operationId: ListGroupReservations
+      parameters:
+      - description: URL encoded name of group for which to retrieve reservations.
+        in: path
+        name: groupName
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/filterParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/showDeleted'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReservationsResponse'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: List Group Reservations
+      tags:
+      - reservations
+  /v1/reservations:
+    parameters: []
+    get:
+      description: 'List existing reservations for the authenticated user,
+
+        or a target user when specifying `X-QCS-ACCOUNT-ID` and `X-QCS-ACCOUNT-TYPE`
+
+        headers.
+
+
+        Available filter fields include:
+
+
+        * `startTime` - timestamp
+
+        * `endTime` - timestamp
+
+        * `createdTime` - timestamp
+
+        * `price` - integer
+
+        * `cancelled` - boolean (deprecated, use `showDeleted` parameter)
+
+        * `quantumProcessorId` - string
+
+
+        Available order fields include:
+
+
+        * `startTime` - timestamp
+
+        * `endTime` - timestamp
+
+        * `createdTime` - timestamp
+
+        * `price` - integer
+
+        '
+      operationId: ListReservations
+      parameters:
+      - $ref: '#/components/parameters/filterParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/showDeleted'
+      - $ref: '#/components/parameters/accountIdHeader'
+      - $ref: '#/components/parameters/accountTypeHeader'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReservationsResponse'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: List Reservations
+      tags:
+      - reservations
+    post:
+      description: 'Create a new reservation.
+
+
+        The following precedence applies when specifying the reservation subject account
+
+        ID and type:
+
+        * request body `accountId` field, or if unset then `X-QCS-ACCOUNT-ID` header,
+
+        or if unset then requesting user''s ID.
+
+        * request body `accountType` field, or if unset then `X-QCS-ACCOUNT-TYPE`
+
+        header, or if unset then "user" type.
+
+        '
+      operationId: CreateReservation
+      parameters:
+      - $ref: '#/components/parameters/accountIdHeader'
+      - $ref: '#/components/parameters/accountTypeHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReservationRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: Reservation successfully created.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Insufficient payment to book reservation.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User not authorized to make the requested reservation.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested reservation is unavailable.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Create Reservation
+      tags:
+      - reservations
+  /v1/reservations/{reservationId}:
+    parameters:
+    - in: path
+      name: reservationId
+      required: true
+      schema:
+        type: integer
+    get:
+      description: Find an existing reservation by ID.
+      operationId: GetReservation
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User not authorized to retrieve reservation.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Requested reservation does not exist.
+      security:
+      - JWTBearer: []
+      summary: Get Reservation
+      tags:
+      - reservations
+    delete:
+      description: Cancel an existing reservation for the user.
+      operationId: DeleteReservation
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: Reservation successfully cancelled.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: User not authorized to delete reservation.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Requested reservation does not exist.
+      security:
+      - JWTBearer: []
+      summary: Delete Reservation
+      tags:
+      - reservations
+  /v1/reservations:findAvailable:
+    parameters: []
+    get:
+      description: List currently available reservations on the requested Rigetti quantum computer.
+      operationId: FindAvailableReservations
+      parameters:
+      - $ref: '#/components/parameters/pageSizeParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      - in: query
+        name: quantumProcessorId
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: startTimeFrom
+        required: true
+        schema:
+          format: date-time
+          type: string
+      - in: query
+        name: duration
+        required: true
+        schema:
+          description: Formatted as specified for golang https://golang.org/pkg/time/#ParseDuration.
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindAvailableReservationsResponse'
+          description: Request completed successfully.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request authentication failed.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Request validation failed.
+      security:
+      - JWTBearer: []
+      summary: Find Available Reservations
+      tags:
+      - reservations
+components:
+  parameters:
+    orderParam:
+      in: query
+      name: order
+      required: false
+      schema:
+        $ref: '#/components/schemas/Order'
+    accountTypeHeader:
+      description: 'Used to specify the subject account''s type for a request
+
+        in conjunction with the X-QCS-ACCOUNT-ID header.
+
+        Does not take precedence over a corresponding request body field when one
+
+        is present.
+
+        '
+      in: header
+      name: X-QCS-ACCOUNT-TYPE
+      schema:
+        $ref: '#/components/schemas/AccountType'
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+    showDeleted:
+      description: If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`.
+      in: query
+      name: showDeleted
+      required: false
+      schema:
+        default: 'false'
+        enum:
+        - 'true'
+        - 'false'
+        type: string
+    filterParam:
+      in: query
+      name: filter
+      schema:
+        $ref: '#/components/schemas/Filter'
+    accountIdHeader:
+      description: 'Used to specify a subject account ID for a request.
+
+        Does not take precedence over a corresponding request body field when one
+
+        is present.
+
+        '
+      in: header
+      name: X-QCS-ACCOUNT-ID
+      schema:
+        $ref: '#/components/schemas/AccountId'
+    pageTokenParam:
+      description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
+      in: query
+      name: pageToken
+      required: false
+      schema:
+        type: string
+  schemas:
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    CreateReservationRequest:
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        endTime:
+          format: date-time
+          type: string
+        notes:
+          type: string
+        quantumProcessorId:
+          type: string
+        startTime:
+          format: date-time
+          type: string
+      required:
+      - quantumProcessorId
+      - startTime
+      - endTime
+      type: object
+    ListReservationsResponse:
+      properties:
+        nextPageToken:
+          type: string
+        reservations:
+          items:
+            $ref: '#/components/schemas/Reservation'
+          type: array
+      required:
+      - reservations
+      - nextPageToken
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    Filter:
+      description: "A string conforming to a *limited* set of the filtering operations described in [Google AIP 160](https://google.aip.dev/160).\n\n* Expressions are always of the form `{field} {operator} {value}` and may be grouped with `()` and joined with `AND` or `OR`.\n* Fields are specific to the route in question, but are typically a subset of attributes of the requested resource.\n* Operators are limited to `=`, `>`, `>=`, `<`, `<=`, and `!=`.\n* Values may take the following forms:\n  * `true` or `false` for boolean fields\n  * a number\n  * a string (include surrounding `\"`s),\n  * a duration string (include surrounding `\"`s). Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\n  * a date string (include surrounding `\"`s). Should be formatted [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nFor example, `startTime >= \"2020-06-24T22:00:00.000Z\" OR (duration >= \"15m\" AND endTime < \"2020-06-24T22:00:00.000Z\")`.\n"
+      type: string
+    AvailableReservation:
+      properties:
+        duration:
+          type: string
+        endTime:
+          format: date-time
+          type: string
+        price:
+          type: integer
+        quantumProcessorId:
+          type: string
+        startTime:
+          format: date-time
+          type: string
+      required:
+      - quantumProcessorId
+      - startTime
+      - endTime
+      - duration
+      - price
+      type: object
+    AccountId:
+      description: userId for `accountType` "user", group name for `accountType` "group".
+      type: string
+    FindAvailableReservationsResponse:
+      properties:
+        availableReservations:
+          items:
+            $ref: '#/components/schemas/AvailableReservation'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - availableReservations
+      type: object
+    Order:
+      description: 'A string conforming to order specification described in [Google
+
+        AIP 132](https://google.aip.dev/132#ordering).
+
+
+        * Fields are specific to the route in question, but are typically a subset
+
+        of attributes of the requested resource.
+
+        * May include a comma separated list of many fields.
+
+        * Fields are sorted in *ascending* order unless the field is followed by `DESC`.
+
+
+        For example, `quantumProcessorId, startTime DESC`.
+
+        '
+      type: string
+    QuantumProcessorCalendar:
+      description: Details about calendars related to a quantum processor.
+      properties:
+        maintenanceICal:
+          description: This calendar's schedule contains maintenance events for the QPU, during which execution is not available.
+          type: string
+      type: object
+    Reservation:
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        cancellationBillingInvoiceItemId:
+          type: string
+        cancelled:
+          type: boolean
+        createdByAccountId:
+          $ref: '#/components/schemas/AccountId'
+        createdByAccountType:
+          $ref: '#/components/schemas/AccountType'
+        createdTime:
+          format: date-time
+          type: string
+        creationBillingInvoiceItemId:
+          type: string
+        endTime:
+          format: date-time
+          type: string
+        id:
+          type: integer
+        notes:
+          type: string
+        price:
+          type: integer
+        quantumProcessorId:
+          type: string
+        startTime:
+          format: date-time
+          type: string
+        updatedTime:
+          format: date-time
+          type: string
+        userId:
+          deprecated: true
+          description: Deprecated in favor of `accountId`.
+          type: string
+      required:
+      - accountId
+      - accountType
+      - id
+      - userId
+      - quantumProcessorId
+      - startTime
+      - endTime
+      - createdTime
+      - price
+      type: object
+    AccountType:
+      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
+      default: user
+      enum:
+      - group
+      - user
+      type: string
+  securitySchemes:
+    JWTBearer:
+      bearerFormat: JWT
+      description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the token is absent, invalid or expired, the client will receive a 401 response. If the token is valid, the server uses the claims to authorize the request, which may result in a 403 response.
+      scheme: bearer
+      type: http
+    JWTBearerOptional:
+      bearerFormat: JWT
+      description: Same as `JWTBearer`, but the Authorization header is optionally parsed. Clients will receive a 401 response if an invalid or expired token is provided. Otherwise, the server authorizes the request against either the valid token claims or an unauthenticated user. In either case, the client may receive a 403 response.
+      scheme: bearer
+      type: http
+x-tagGroups:
+- name: Account Management
+  tags:
+  - account
+  - authentication
+- name: QPU Access
+  tags:
+  - endpoints
+  - deployments
+  - engagements
+  - quantumProcessors
+  - reservations
+  - translation
+- name: SDKs
+  tags:
+  - clientApplications
+- name: Filtering and ordering
+  tags:
+  - filterParameter
+  - orderParameter
+- name: Errors
+  tags:
+  - errors
