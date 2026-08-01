@@ -1,0 +1,30 @@
+{
+  "provider": "rigetti-and-co",
+  "sources": [
+    "rigetti-and-co-account-api-openapi.yml",
+    "rigetti-and-co-authentication-api-openapi.yml",
+    "rigetti-and-co-clientapplications-api-openapi.yml",
+    "rigetti-and-co-endpoints-api-openapi.yml",
+    "rigetti-and-co-engagements-api-openapi.yml",
+    "rigetti-and-co-healthcheck-api-openapi.yml",
+    "rigetti-and-co-quantumprocessors-api-openapi.yml",
+    "rigetti-and-co-reservations-api-openapi.yml",
+    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml"
+  ],
+  "outputs": [
+    "rigetti-and-co-account-api-openapi.yml",
+    "rigetti-and-co-authentication-api-openapi.yml",
+    "rigetti-and-co-clientapplications-api-openapi.yml",
+    "rigetti-and-co-endpoints-api-openapi.yml",
+    "rigetti-and-co-engagements-api-openapi.yml",
+    "rigetti-and-co-healthcheck-api-openapi.yml",
+    "rigetti-and-co-quantumprocessors-api-openapi.yml",
+    "rigetti-and-co-reservations-api-openapi.yml",
+    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

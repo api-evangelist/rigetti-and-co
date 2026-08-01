@@ -1,0 +1,23 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/rigetti-and-co-qcs-openapi.yml
+standards:
+- id: oauth2
+  conforms: true
+  evidence: All QCS access requires OAuth2 (Okta) bearer tokens; docs Authentication section.
+- id: jwt-bearer
+  conforms: true
+  evidence: securitySchemes JWTBearer/JWTBearerOptional are http bearer JWT.
+- id: google-aip
+  conforms: true
+  evidence: Docs state adherence to Google API Improvement Proposals (aip.dev); resource-oriented paths
+    with colon custom methods.
+- id: openapi-3
+  conforms: true
+  evidence: Published OpenAPI 3.0.2 document.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a custom JSON Error envelope, not application/problem+json.
+- id: rest
+  conforms: true
+  evidence: 'Docs: ''follows REST design principles where appropriate, otherwise an HTTP RPC paradigm.'''

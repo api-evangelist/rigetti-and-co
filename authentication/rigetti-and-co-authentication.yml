@@ -1,0 +1,17 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/rigetti-and-co-qcs-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: JWTBearer
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: A JSON web token with `sub` or `uid` claim, as well as `groups` claim. If the
+    token is absent, invalid or expired, the client will receive a 401 response. If the token
+    is valid, the server uses the claims to authorize the request, which may result in a 403
+    response.
+  sources:
+  - openapi/rigetti-and-co-qcs-openapi.yml

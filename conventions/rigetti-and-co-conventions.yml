@@ -1,0 +1,63 @@
+generated: '2026-07-21'
+method: searched
+source:
+- openapi/rigetti-and-co-qcs-openapi.yml
+- https://docs.rigetti.com/qcs/api-reference
+api: openapi/rigetti-and-co-qcs-openapi.yml
+authentication:
+  style: Bearer JWT
+  scheme: http bearer (JWTBearer / JWTBearerOptional)
+  issuer: Okta (OAuth2) — access token downloaded from https://qcs.rigetti.com/auth/token, valid 24h
+  header: 'Authorization: Bearer <access_token>'
+  detail: authentication/rigetti-and-co-authentication.yml
+account_context:
+  headers:
+  - x-qcs-account-id
+  - x-qcs-account-type
+  note: Requests may be scoped to a QCS account (user or group) via these headers.
+pagination:
+  style: cursor-token
+  request_params:
+  - pageSize
+  - pageToken
+  response_fields:
+  - nextPageToken
+  note: List endpoints return a nextPageToken; pass it back as pageToken to page forward.
+filtering:
+  params:
+  - filter
+  - order
+  note: Collection endpoints accept a filter expression and order parameter (see filterParameter/orderParameter
+    tags).
+idempotency:
+  supported: false
+  note: QCS does not document an idempotency-key header; no Idempotency-Key parameter appears in the OpenAPI.
+request_tracing:
+  field: requestId
+  note: Every error envelope carries a requestId for correlation with Rigetti support.
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: '2020-07-31'
+  note: Paths are prefixed /v1/. The OpenAPI document is date-versioned (2020-07-31).
+  detail: lifecycle/rigetti-and-co-lifecycle.yml
+custom_verbs:
+  style: Google AIP colon custom methods
+  examples:
+  - :restart
+  - :getDefault
+  - :check
+  - :findAvailable
+  - :addUser
+  - :removeUser
+  - :activate
+  - :get
+  - :getUpcoming
+  - :listUpcomingLines
+  note: Follows Google API Improvement Proposals (aip.dev) — resource-oriented with colon custom methods.
+errors:
+  detail: errors/rigetti-and-co-problem-types.yml
+  envelope: components/schemas/Error
+rate_limiting:
+  documented: false
+  note: No rate-limit headers or policy declared in the OpenAPI.

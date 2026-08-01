@@ -1,0 +1,20 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/rigetti-and-co-qcs-openapi.yml
+skills:
+  - file: rigetti-and-co-discover-quantum-processors.md
+    name: Discover Rigetti quantum processors and their capabilities
+    api: openapi/rigetti-and-co-qcs-openapi.yml
+    operations: [ListQuantumProcessors, GetQuantumProcessor, GetInstructionSetArchitecture, GetQuantumProcessorAccessors, ListInstructionSetArchitectures]
+  - file: rigetti-and-co-reserve-qpu-time.md
+    name: Reserve execution time on a Rigetti QPU
+    api: openapi/rigetti-and-co-qcs-openapi.yml
+    operations: [GetQuantumProcessorCalendar, FindAvailableReservations, CreateReservation, ListReservations, GetReservation, DeleteReservation]
+  - file: rigetti-and-co-create-engagement.md
+    name: Open an execution engagement against a Rigetti endpoint
+    api: openapi/rigetti-and-co-qcs-openapi.yml
+    operations: [GetDefaultEndpoint, ListEndpoints, GetEndpoint, CreateEngagement]
+  - file: rigetti-and-co-account-billing.md
+    name: Check Rigetti QCS account balance and billing
+    api: openapi/rigetti-and-co-qcs-openapi.yml
+    operations: [GetUserBalance, GetGroupBalance, ListUserBillingInvoices, ListGroupBillingInvoices, GetUserUpcomingBillingInvoice, ListUserGroups]

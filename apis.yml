@@ -1,22 +1,239 @@
 aid: rigetti-and-co
 name: Rigetti & Co
-description: Rigetti & Co is a company surfaced as a portfolio company of a16z and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: Rigetti Computing (Rigetti & Co) is a full-stack quantum computing company that builds superconducting
+  quantum processors and delivers access to them through Quantum Cloud Services (QCS). The QCS HTTP API
+  is an OpenAPI 3.0.2 REST/RPC interface (aligned with Google API Improvement Proposals) for discovering
+  quantum processors and their instruction set architectures, reserving execution time, opening execution
+  engagements against endpoints, and managing accounts and billing. Quantum programs are built and run
+  with the pyQuil and qcs-sdk Python/Rust SDKs, while low-latency job execution, readout, and translation
+  run over a companion gRPC surface. Authentication is OAuth2 (Okta) bearer JWT. Surfaced as an a16z portfolio
+  company and enriched by the API Evangelist pipeline from Rigetti's published OpenAPI, gRPC protos, client
+  packages, and QCS documentation.
 url: https://raw.githubusercontent.com/api-evangelist/rigetti-and-co/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: active
+x-tier-reason: enriched-real-api-surface
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
-apis: []
+- Quantum Computing
+- Quantum
+- Infrastructure
+- Developers
+- Cloud Computing
+- QPU
+- API
+apis:
+- aid: rigetti-and-co:rigetti-and-co-account-api
+  name: Rigetti & Co account API
+  description: The account API from Rigetti & Co — 22 operation(s) for account.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - account
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-account-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-authentication-api
+  name: Rigetti & Co authentication API
+  description: The authentication API from Rigetti & Co — 4 operation(s) for authentication.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-authentication-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-clientapplications-api
+  name: Rigetti & Co clientApplications API
+  description: Check for the latest SDK versions.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - clientApplications
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-clientapplications-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-endpoints-api
+  name: Rigetti & Co endpoints API
+  description: The Endpoint is the means of access to a Quantum Processor.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-endpoints-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-engagements-api
+  name: Rigetti & Co engagements API
+  description: The Engagement is the authorization mechanism for access to the Quantum Processor.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - engagements
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-engagements-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-healthcheck-api
+  name: Rigetti & Co Healthcheck API
+  description: The Healthcheck API from Rigetti & Co — 1 operation(s) for healthcheck.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - Healthcheck
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-healthcheck-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-quantumprocessors-api
+  name: Rigetti & Co quantumProcessors API
+  description: The Quantum Processor is the heart of the Rigetti services.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - quantumProcessors
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-quantumprocessors-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-reservations-api
+  name: Rigetti & Co reservations API
+  description: Find existing time on a Rigetti QPU and reserve it.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - reservations
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-reservations-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-rigetti-qcs-api-api
+  name: Rigetti & Co Rigetti QCS API API
+  description: The Rigetti QCS API API from Rigetti & Co — 2 operation(s) for rigetti qcs api.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - Rigetti QCS API
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-rigetti-qcs-api-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+common:
+- type: AgenticAccess
+  url: agentic-access/rigetti-and-co-agentic-access.yml
+- type: DomainSecurity
+  url: security/rigetti-and-co-domain-security.yml
+- type: Authentication
+  url: authentication/rigetti-and-co-authentication.yml
+- type: Conventions
+  url: conventions/rigetti-and-co-conventions.yml
+- type: ErrorCatalog
+  url: errors/rigetti-and-co-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/rigetti-and-co-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/rigetti-and-co-lifecycle.yml
+- type: Conformance
+  url: conformance/rigetti-and-co-conformance.yml
+- type: DataModel
+  url: data-model/rigetti-and-co-data-model.yml
+- type: Packages
+  url: packages/rigetti-and-co-packages.yml
+- type: SDKs
+  url: packages/rigetti-and-co-packages.yml
+- type: MCPServer
+  url: mcp/rigetti-and-co-mcp.yml
+- type: LLMsTxt
+  url: llms/rigetti-and-co-llms.txt
+- type: Overlay
+  url: overlays/rigetti-and-co-qcs-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: WellKnown
+  url: well-known/rigetti-and-co-well-known.yml
+- type: DeveloperPortal
+  url: https://qcs.rigetti.com
+- type: Documentation
+  url: https://docs.rigetti.com/qcs/
+- type: APIReference
+  url: https://docs.rigetti.com/qcs/api-reference
+- type: GettingStarted
+  url: https://docs.rigetti.com/qcs/getting-started
+- type: Support
+  url: https://rigetti.zendesk.com
+- type: Blog
+  url: https://www.rigetti.com/news
+- type: GitHubOrganization
+  url: https://github.com/rigetti
+- type: SignUp
+  url: https://www.rigetti.com/get-quantum
+- type: Login
+  url: https://qcs.rigetti.com/sign-in
+- type: TermsOfService
+  url: https://www.rigetti.com/terms
+- type: PrivacyPolicy
+  url: https://www.rigetti.com/privacy-policy
+- type: ChangeLog
+  url: https://docs.rigetti.com/qcs/changelog
+- type: Website
+  url: https://www.rigetti.com
+image: https://docs.rigetti.com/img/rigetti.png
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1

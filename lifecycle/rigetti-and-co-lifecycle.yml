@@ -1,0 +1,22 @@
+generated: '2026-07-21'
+method: searched
+source:
+- openapi/rigetti-and-co-qcs-openapi.yml
+- https://docs.rigetti.com/qcs/changelog
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: '2020-07-31'
+  docs: https://docs.rigetti.com/qcs/api-reference
+changelog: https://docs.rigetti.com/qcs/changelog
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: The root GET /v1/ health check (HealthCheckDeprecated) is marked deprecated in the spec. Separately,
+    the legacy Forest HTTP API at https://forest-server.qcs.rigetti.com is documented as on the path to
+    deprecation in favor of the QCS API.
+  legacy_api: https://forest-server.qcs.rigetti.com
+sla: null
+status_page: null
+deprecated_operations:
+- openapi/rigetti-and-co-qcs-openapi.yml#HealthCheckDeprecated

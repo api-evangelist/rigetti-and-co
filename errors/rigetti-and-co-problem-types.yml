@@ -1,0 +1,59 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/rigetti-and-co-qcs-openapi.yml
+docs: https://docs.rigetti.com/qcs/api-reference
+format: custom-json
+envelope:
+  media_type: application/json
+  schema: components/schemas/Error
+  fields:
+    code: Machine-readable error code (conventional HTTP status name with more granularity).
+    message: Human-readable message.
+    requestId: Correlation id to quote in support requests.
+    validationErrors: Optional array (present on invalid_input) of {path?, message} per-field detail.
+  note: All QCS service errors conform to the Error schema. Errors are NOT RFC 9457 problem+json; they
+    use this custom JSON envelope.
+problems:
+- code: unauthorized
+  status: 401
+  title: Unauthorized
+  remediation: Authentication failed or token expired; refresh the token and retry.
+- code: forbidden
+  status: 403
+  title: Forbidden
+  remediation: The authenticated principal is not permitted to perform this operation.
+- code: not_found
+  status: 404
+  title: Not Found
+  remediation: The requested resource does not exist.
+- code: insufficient_payment
+  status: 402
+  title: Insufficient Payment
+  remediation: Insufficient funds are available to book the reservation.
+- code: reservation_unavailable
+  status: 409
+  title: Reservation Unavailable
+  remediation: The requested reservation time is not available.
+- code: invalid_input
+  status: 422
+  title: Invalid Input
+  remediation: Request failed validation; see validationErrors[] for per-field detail.
+- code: invalid_password_reset_token
+  status: 422
+  title: Invalid Password Reset Token
+  remediation: The supplied password reset token is invalid or expired.
+- code: invalid_email_verification_token
+  status: 422
+  title: Invalid Email Verification Token
+  remediation: The supplied email verification token is invalid or expired.
+code_vocabulary:
+- conflicting_resource_access
+- resource_exists
+- access_forbidden
+- internal_error
+- invalid_request
+- invalid_token
+- resource_not_found
+- under_load
+- unauthenticated
+- unimplemented

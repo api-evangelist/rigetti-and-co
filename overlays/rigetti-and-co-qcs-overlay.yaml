@@ -1,0 +1,21 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Rigetti QCS API
+  version: 1.0.0
+extends: openapi/rigetti-and-co-qcs-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-21'
+    x-apievangelist-provider: rigetti-and-co
+    x-apievangelist-domain: quantum-computing
+    x-apievangelist-error-format: custom-json (Error envelope; not RFC 9457)
+    x-apievangelist-pagination: cursor-token (pageSize/pageToken/nextPageToken)
+- target: $.info
+  update:
+    x-apievangelist-artifacts:
+    - authentication/rigetti-and-co-authentication.yml
+    - conventions/rigetti-and-co-conventions.yml
+    - errors/rigetti-and-co-problem-types.yml
+    - lifecycle/rigetti-and-co-lifecycle.yml
+    - data-model/rigetti-and-co-data-model.yml

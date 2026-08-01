@@ -1,0 +1,163 @@
+generated: '2026-07-21'
+method: derived
+status: candidate
+source: openapi/rigetti-and-co-qcs-openapi.yml
+note: No official hosted/remote Rigetti MCP server found (searched docs, npm @modelcontextprotocol, registries).
+  Candidate tool list derived one-per-operation from the QCS OpenAPI.
+server:
+  name: rigetti-qcs
+  transport: http
+tools:
+- name: GetHealth
+  description: GET /
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetHealth
+- name: ListEndpoints
+  description: List Endpoints
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListEndpoints
+- name: CreateEndpoint
+  description: Create Endpoint
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#CreateEndpoint
+- name: DeleteEndpoint
+  description: Delete Endpoint
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#DeleteEndpoint
+- name: GetEndpoint
+  description: Get Endpoint
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetEndpoint
+- name: RestartEndpoint
+  description: Restart Endpoint
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#RestartEndpoint
+- name: CreateEngagement
+  description: Create Engagement
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#CreateEngagement
+- name: GetDefaultEndpoint
+  description: Get Default Endpoint
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetDefaultEndpoint
+- name: GetQuantumProcessor
+  description: Get Quantum Processor
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetQuantumProcessor
+- name: ListQuantumProcessors
+  description: List Quantum Processors
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListQuantumProcessors
+- name: GetQuantumProcessorAccessors
+  description: Get Quantum Processor Accessors
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetQuantumProcessorAccessors
+- name: GetInstructionSetArchitecture
+  description: Get Instruction Set Architecture
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetInstructionSetArchitecture
+- name: ListInstructionSetArchitectures
+  description: List Instruction Set Architectures
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListInstructionSetArchitectures
+- name: HealthCheck
+  description: Health Check
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#HealthCheck
+- name: AuthEmailPasswordResetToken
+  description: Email Password Reset Token
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#AuthEmailPasswordResetToken
+- name: AuthGetUser
+  description: Get User
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#AuthGetUser
+- name: AuthResetPassword
+  description: Reset Password
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#AuthResetPassword
+- name: AuthResetPasswordWithToken
+  description: Reset Password With Token
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#AuthResetPasswordWithToken
+- name: GetQuantumProcessorCalendar
+  description: Get Quantum Processor Calendar
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetQuantumProcessorCalendar
+- name: ListClientApplications
+  description: List Client Applications
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListClientApplications
+- name: GetClientApplication
+  description: Get Client Application
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetClientApplication
+- name: CheckClientApplication
+  description: Check Client Application
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#CheckClientApplication
+- name: GetGroupBalance
+  description: Get Group Balance
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetGroupBalance
+- name: GetGroupBillingCustomer
+  description: GET /v1/groups/{groupName}/billingCustomer
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetGroupBillingCustomer
+- name: ListGroupBillingInvoices
+  description: GET /v1/groups/{groupName}/billingInvoices
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListGroupBillingInvoices
+- name: ListGroupBillingInvoiceLines
+  description: GET /v1/groups/{groupName}/billingInvoices/{billingInvoiceId}/lines
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListGroupBillingInvoiceLines
+- name: GetGroupUpcomingBillingInvoice
+  description: GET /v1/groups/{groupName}/billingInvoices:getUpcoming
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetGroupUpcomingBillingInvoice
+- name: ListGroupUpcomingBillingInvoiceLines
+  description: GET /v1/groups/{groupName}/billingInvoices:listUpcomingLines
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListGroupUpcomingBillingInvoiceLines
+- name: ListGroupReservations
+  description: List Group Reservations
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListGroupReservations
+- name: ListGroupUsers
+  description: List users belonging to a group
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListGroupUsers
+- name: AddGroupUser
+  description: Add user to a group
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#AddGroupUser
+- name: RemoveGroupUser
+  description: Remove user from a group.
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#RemoveGroupUser
+- name: ListReservations
+  description: List Reservations
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListReservations
+- name: CreateReservation
+  description: Create Reservation
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#CreateReservation
+- name: GetReservation
+  description: Get Reservation
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetReservation
+- name: DeleteReservation
+  description: Delete Reservation
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#DeleteReservation
+- name: FindAvailableReservations
+  description: Find Available Reservations
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#FindAvailableReservations
+- name: GetUserBalance
+  description: Get User Balance
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetUserBalance
+- name: GetUserBillingCustomer
+  description: GET /v1/users/{userId}/billingCustomer
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetUserBillingCustomer
+- name: ListUserBillingInvoices
+  description: GET /v1/users/{userId}/billingInvoices
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListUserBillingInvoices
+- name: ListUserBillingInvoiceLines
+  description: GET /v1/users/{userId}/billingInvoices/{billingInvoiceId}/lines
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListUserBillingInvoiceLines
+- name: GetUserUpcomingBillingInvoice
+  description: GET /v1/users/{userId}/billingInvoices:getUpcoming
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetUserUpcomingBillingInvoice
+- name: ListUserUpcomingBillingInvoiceLines
+  description: GET /v1/users/{userId}/billingInvoices:listUpcomingLines
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListUserUpcomingBillingInvoiceLines
+- name: GetUserEventBillingPrice
+  description: POST /v1/users/{userId}/eventBillingPrices:get
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetUserEventBillingPrice
+- name: ListUserGroups
+  description: List QCS groups for the requested user
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListUserGroups
+- name: ActivateUser
+  description: Activate User
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ActivateUser
+- name: ListViewerAnnouncements
+  description: GET /v1/viewer/announcements
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#ListViewerAnnouncements
+- name: DismissViewerAnnouncement
+  description: DELETE /v1/viewer/announcements/{announcementId}
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#DismissViewerAnnouncement
+- name: UpdateViewerUserProfile
+  description: PUT /v1/viewer/userProfile
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#UpdateViewerUserProfile
+- name: GetViewerUserOnboardingCompleted
+  description: GET /v1/viewer/onboardingCompleted
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#GetViewerUserOnboardingCompleted
+- name: PutViewerUserOnboardingCompleted
+  description: PUT /v1/viewer/onboardingCompleted
+  source_operation: openapi/rigetti-and-co-qcs-openapi.yml#PutViewerUserOnboardingCompleted

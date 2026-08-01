@@ -1,0 +1,63 @@
+generated: '2026-07-21'
+method: searched
+source:
+- https://github.com/rigetti
+- https://pypi.org
+- https://crates.io
+packages:
+- language: python
+  registry: pypi
+  name: pyquil
+  url: https://pypi.org/project/pyquil/
+  install: pip install pyquil
+  official: true
+  description: Python library for building/running Quil quantum programs on QCS.
+- language: python
+  registry: pypi
+  name: qcs-sdk-python
+  url: https://pypi.org/project/qcs-sdk-python/
+  install: pip install qcs-sdk-python
+  official: true
+  description: Python interface for the QCS Rust SDK.
+- language: python
+  registry: pypi
+  name: qcs-api-client
+  url: https://pypi.org/project/qcs-api-client/
+  install: pip install qcs-api-client
+  official: true
+  description: Client library for accessing the Rigetti QCS API (OpenAPI-generated).
+- language: rust
+  registry: crates.io
+  name: qcs
+  url: https://crates.io/crates/qcs
+  install: cargo add qcs
+  official: true
+  description: High-level Rust SDK for Rigetti QCS.
+- language: rust
+  registry: crates.io
+  name: qcs-api-client-openapi
+  url: https://crates.io/crates/qcs-api-client-openapi
+  install: cargo add qcs-api-client-openapi
+  official: true
+  description: Rust OpenAPI client for the QCS HTTP API.
+- language: rust
+  registry: crates.io
+  name: qcs-api-client-grpc
+  url: https://crates.io/crates/qcs-api-client-grpc
+  install: cargo add qcs-api-client-grpc
+  official: true
+  description: Rust gRPC client for QCS gRPC APIs.
+- language: rust
+  registry: crates.io
+  name: qcs-api-client-common
+  url: https://crates.io/crates/qcs-api-client-common
+  install: cargo add qcs-api-client-common
+  official: true
+  description: Shared configuration/auth for the QCS Rust clients.
+- language: rust
+  registry: crates.io
+  name: quil-rs
+  url: https://crates.io/crates/quil-rs
+  install: cargo add quil-rs
+  official: true
+  description: Quil parser and program builder.

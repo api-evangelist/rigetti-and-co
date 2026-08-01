@@ -1,0 +1,146 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/rigetti-and-co-qcs-openapi.yml
+note: 'Entity graph derived from OpenAPI component schemas and id-reference fields. QCS domain: quantum
+  processors, endpoints, reservations, engagements, groups/users, billing.'
+entities:
+- AccountBalance
+- AccountId
+- AccountType
+- ActivateUserRequest
+- AddGroupUserRequest
+- Announcement
+- AnnouncementsResponse
+- Architecture
+- AuthEmailPasswordResetTokenRequest
+- AuthResetPasswordRequest
+- AuthResetPasswordWithTokenRequest
+- AvailableReservation
+- BillingCustomer
+- BillingInvoice
+- BillingInvoiceLine
+- BillingInvoiceStatus
+- BillingPrice
+- BillingPriceRecurrence
+- BillingPriceScheme
+- BillingPriceTier
+- BillingPriceTiersMode
+- BillingProduct
+- BillingUpcomingInvoice
+- Characteristic
+- CheckClientApplicationRequest
+- CheckClientApplicationResponse
+- ChecksumDescription
+- ClientApplication
+- ClientApplicationsDownloadLink
+- Code
+- CreateEndpointParameters
+- CreateEngagementRequest
+- CreateReservationRequest
+- Edge
+- Endpoint
+- EndpointAddresses
+- EngagementCredentials
+- EngagementWithCredentials
+- Error
+- EventBillingPriceRate
+- Family
+- Filter
+- FindAvailableReservationsResponse
+- GetAccountEventBillingPriceRequest
+- Group
+- Health
+- InstructionSetArchitecture
+- InviteUserRequest
+- ListAccountBillingInvoiceLinesResponse
+- ListAccountBillingInvoicesResponse
+- ListClientApplicationsResponse
+- ListEndpointsResponse
+- ListGroupUsersResponse
+- ListGroupsResponse
+- ListInstructionSetArchitectureResponse
+- ListQuantumProcessorAccessorsResponse
+- ListQuantumProcessorsResponse
+- ListReservationsResponse
+- Node
+- NomadJobDatacenters
+- Operation
+- OperationSite
+- Order
+- Parameter
+- Product
+- QuantumProcessor
+- QuantumProcessorAccessor
+- QuantumProcessorAccessorType
+- QuantumProcessorCalendar
+- RemoveGroupUserRequest
+- Reservation
+- RestartEndpointRequest
+- UpdateViewerUserProfileRequest
+- User
+- UserCredentials
+- UserProfile
+- ValidationError
+- ValidationLocation
+- ViewerUserOnboardingCompleted
+relationships:
+- from: CreateEngagementRequest
+  to: Endpoint
+  type: belongs_to
+  via: endpointId
+- from: CreateEngagementRequest
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: EngagementWithCredentials
+  to: Endpoint
+  type: belongs_to
+  via: endpointId
+- from: EngagementWithCredentials
+  to: User
+  type: belongs_to
+  via: userId
+- from: AddGroupUserRequest
+  to: Group
+  type: belongs_to
+  via: groupName
+- from: AddGroupUserRequest
+  to: User
+  type: belongs_to
+  via: userId
+- from: AvailableReservation
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: CreateReservationRequest
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: EventBillingPriceRate
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: GetAccountEventBillingPriceRequest
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: InviteUserRequest
+  to: Group
+  type: belongs_to
+  via: groupName
+- from: RemoveGroupUserRequest
+  to: Group
+  type: belongs_to
+  via: groupName
+- from: RemoveGroupUserRequest
+  to: User
+  type: belongs_to
+  via: userId
+- from: Reservation
+  to: QuantumProcessor
+  type: belongs_to
+  via: quantumProcessorId
+- from: Reservation
+  to: User
+  type: belongs_to
+  via: userId
