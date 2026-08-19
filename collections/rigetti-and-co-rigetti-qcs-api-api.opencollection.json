@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account Rigetti QCS API API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Rigetti QCS API",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GetHealth",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/"
+          },
+          "docs": "Retrieve the health status of the API"
+        },
+        {
+          "info": {
+            "name": "Health Check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/"
+          },
+          "docs": "Endpoint to return a status 200 for load balancer health checks"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

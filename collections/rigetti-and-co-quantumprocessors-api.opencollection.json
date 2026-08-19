@@ -1,0 +1,138 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account quantumProcessors API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "quantumProcessors",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Quantum Processor",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/quantumProcessors/:quantum_processor_id",
+            "params": [
+              {
+                "name": "quantum_processor_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a single `QuantumProcessor` by ID."
+        },
+        {
+          "info": {
+            "name": "List Quantum Processors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/quantumProcessors",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List the [`QuantumProcessor`]s that this user is authorized to access.\n\nIf no auth token is provided, only public processors will be returned."
+        },
+        {
+          "info": {
+            "name": "Get Quantum Processor Accessors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/quantumProcessors/:quantum_processor_id/accessors",
+            "params": [
+              {
+                "name": "quantum_processor_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a single `QuantumProcessor` by ID."
+        },
+        {
+          "info": {
+            "name": "Get Instruction Set Architecture",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/quantumProcessors/:quantum_processor_id/instructionSetArchitecture",
+            "params": [
+              {
+                "name": "quantum_processor_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get Instruction Set Architecture"
+        },
+        {
+          "info": {
+            "name": "List Instruction Set Architectures",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/instructionSetArchitectures",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List Instruction Set Architectures"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

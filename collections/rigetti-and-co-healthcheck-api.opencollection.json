@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account Healthcheck API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Healthcheck",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Health Check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/healthcheck"
+          },
+          "docs": "Check the health of the service."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

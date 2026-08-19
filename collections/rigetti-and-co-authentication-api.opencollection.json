@@ -1,0 +1,82 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account authentication API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Email Password Reset Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/auth:emailPasswordResetToken",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Send a password reset link to the provided email address, if that email matches a registered user."
+        },
+        {
+          "info": {
+            "name": "Get User",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/auth:getUser",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the profile of the authenticated user."
+        },
+        {
+          "info": {
+            "name": "Reset Password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/auth:resetPassword",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reset the password using the user's existing password. Note, this is an authenticated route."
+        },
+        {
+          "info": {
+            "name": "Reset Password With Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/auth:resetPasswordWithToken",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Complete the forgot password flow, resetting the new password in exchange for an emailed token."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

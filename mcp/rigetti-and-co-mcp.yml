@@ -161,3 +161,9 @@ tools:
 - name: PutViewerUserOnboardingCompleted
   description: PUT /v1/viewer/onboardingCompleted
   source_operation: openapi/rigetti-and-co-qcs-openapi.yml#PutViewerUserOnboardingCompleted
+deployment:
+  mode: none
+  verified: derived
+  tools: 51
+  checked: '2026-08-12'
+  source: catalog MCP census

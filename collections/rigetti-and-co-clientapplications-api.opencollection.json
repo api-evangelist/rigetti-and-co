@@ -1,0 +1,62 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account clientApplications API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "clientApplications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Client Applications",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/clientApplications"
+          },
+          "docs": "List supported clients of Rigetti system components along with their latest and minimum supported versions."
+        },
+        {
+          "info": {
+            "name": "Get Client Application",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/clientApplications/:clientApplicationName",
+            "params": [
+              {
+                "name": "clientApplicationName",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details of a specific Rigetti system component along with its latest and minimum supported versions."
+        },
+        {
+          "info": {
+            "name": "Check Client Application",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/clientApplications:check",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Check the requested client application version against the latest and minimum version."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,260 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account reservations API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "reservations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Quantum Processor Calendar",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/calendars/:quantumProcessorId",
+            "params": [
+              {
+                "name": "quantumProcessorId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get calendar details for the requested quantum processor."
+        },
+        {
+          "info": {
+            "name": "List Group Reservations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/groups/:groupName/reservations",
+            "params": [
+              {
+                "name": "groupName",
+                "value": "",
+                "type": "path",
+                "description": "URL encoded name of group for which to retrieve reservations."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve."
+              },
+              {
+                "name": "showDeleted",
+                "value": "",
+                "type": "query",
+                "description": "If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List existing reservations for the requested group.\n\nAvailable filter fields include:\n\n* `startTime` - timestamp\n* `endTime` - timestamp\n* `createdTime` - timestamp\n* `price` - integer\n* `quantumProcessorId` - string\n\nAvailable order fields include:\n\n* `startTime` - timestamp\n* `endTime` - timestamp\n* `createdTime` - timestamp\n* `price` - integer\n"
+        },
+        {
+          "info": {
+            "name": "List Reservations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/reservations",
+            "headers": [
+              {
+                "name": "X-QCS-ACCOUNT-ID",
+                "value": ""
+              },
+              {
+                "name": "X-QCS-ACCOUNT-TYPE",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve."
+              },
+              {
+                "name": "showDeleted",
+                "value": "",
+                "type": "query",
+                "description": "If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List existing reservations for the authenticated user,\nor a target user when specifying `X-QCS-ACCOUNT-ID` and `X-QCS-ACCOUNT-TYPE`\nheaders.\n\nAvailable filter fields include:\n\n* `startTime` - timestamp\n* `endTime` - timestamp\n* `createdTime` - timestamp\n* `price` - integer\n* `cancelled` - boolean (deprecated, use `showDeleted` parameter)\n* `quantumProcessorId` - string\n\nAvailable order fields include:\n\n* `startTime` - timestamp\n* `endTime` - timestamp\n* `createdTime` - timestamp\n* `price` - inte"
+        },
+        {
+          "info": {
+            "name": "Create Reservation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/reservations",
+            "headers": [
+              {
+                "name": "X-QCS-ACCOUNT-ID",
+                "value": ""
+              },
+              {
+                "name": "X-QCS-ACCOUNT-TYPE",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new reservation.\n\nThe following precedence applies when specifying the reservation subject account\nID and type:\n* request body `accountId` field, or if unset then `X-QCS-ACCOUNT-ID` header,\nor if unset then requesting user's ID.\n* request body `accountType` field, or if unset then `X-QCS-ACCOUNT-TYPE`\nheader, or if unset then \"user\" type.\n"
+        },
+        {
+          "info": {
+            "name": "Get Reservation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/reservations/:reservationId",
+            "params": [
+              {
+                "name": "reservationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Find an existing reservation by ID."
+        },
+        {
+          "info": {
+            "name": "Delete Reservation",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.qcs.rigetti.com/v1/reservations/:reservationId",
+            "params": [
+              {
+                "name": "reservationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancel an existing reservation for the user."
+        },
+        {
+          "info": {
+            "name": "Find Available Reservations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.qcs.rigetti.com/v1/reservations:findAvailable",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve."
+              },
+              {
+                "name": "quantumProcessorId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "startTimeFrom",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "duration",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List currently available reservations on the requested Rigetti quantum computer."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

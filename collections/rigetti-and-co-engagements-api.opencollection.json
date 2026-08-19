@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Rigetti QCS account engagements API",
+    "version": "2020-07-31"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "engagements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Engagement",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.qcs.rigetti.com/v1/engagements",
+            "headers": [
+              {
+                "name": "x-qcs-account-id",
+                "value": ""
+              },
+              {
+                "name": "x-qcs-account-type",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new engagement using the specified parameters.\n\nAt least one of the following parameters must be supplied:\n- **endpointId**: The ID of the endpoint on which to engage.\n- **quantumProcessorId**: The ID of the quantum processor on which to engage, allowing the\n    service to select a default endpoint. Ignored if **endpointId** is set."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
