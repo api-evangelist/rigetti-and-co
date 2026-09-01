@@ -145,7 +145,7 @@ apis:
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
   tags:
-  - Healthcheck
+  - Health Check
   tags_raw:
   - Healthcheck
   properties:
