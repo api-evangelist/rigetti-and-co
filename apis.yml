@@ -43,7 +43,7 @@ accessModel:
   method: derived
 specificationVersion: '0.23'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-09-16'
 tags:
 - Company
 - Quantum Computing
@@ -188,7 +188,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-rigetti-qcs-api-api
-  name: Rigetti & Co Rigetti QCS API API
+  name: Rigetti & Co Rigetti QCS API
   description: The Rigetti QCS API API from Rigetti & Co — 2 operation(s) for rigetti qcs api.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -231,7 +231,10 @@ common:
   url: packages/rigetti-and-co-packages.yml
 - type: X-MCPServerCandidate
   url: mcp/rigetti-and-co-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+    — a tool list derived from the published API contracts, not an existing server. The scorer already
+    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+    surfaces with a server that does not exist.'
 - type: LLMsTxt
   url: llms/rigetti-and-co-llms.txt
 - type: Overlay
