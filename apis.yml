@@ -140,22 +140,6 @@ apis:
     url: grpc/rigetti-and-co-controller-service.proto
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
-- aid: rigetti-and-co:rigetti-and-co-healthcheck-api
-  name: Rigetti & Co Healthcheck API
-  description: The Healthcheck API from Rigetti & Co — 1 operation(s) for healthcheck.
-  humanURL: https://docs.rigetti.com/qcs/
-  baseURL: https://api.qcs.rigetti.com
-  tags:
-  - Health Check
-  tags_raw:
-  - Healthcheck
-  properties:
-  - type: OpenAPI
-    url: openapi/rigetti-and-co-healthcheck-api-openapi.yml
-  - type: Protobuf
-    url: grpc/rigetti-and-co-controller-service.proto
-  - type: Protobuf
-    url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-quantumprocessors-api
   name: Rigetti & Co quantumProcessors API
   description: The Quantum Processor is the heart of the Rigetti services.
@@ -197,6 +181,20 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/rigetti-and-co-rigetti-qcs-api-api-openapi.yml
+  - type: Protobuf
+    url: grpc/rigetti-and-co-controller-service.proto
+  - type: Protobuf
+    url: grpc/rigetti-and-co-translation-service.proto
+- aid: rigetti-and-co:rigetti-and-co-health-check-api
+  name: Rigetti & Co Health Check API
+  description: The Health Check API from Rigetti & Co — 1 operation(s) for health check.
+  humanURL: https://docs.rigetti.com/qcs/
+  baseURL: https://api.qcs.rigetti.com
+  tags:
+  - Health Check
+  properties:
+  - type: OpenAPI
+    url: openapi/rigetti-and-co-health-check-api-openapi.yml
   - type: Protobuf
     url: grpc/rigetti-and-co-controller-service.proto
   - type: Protobuf
