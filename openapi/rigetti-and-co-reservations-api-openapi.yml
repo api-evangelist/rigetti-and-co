@@ -1,18 +1,21 @@
-openapi: 3.0.2
+openapi: 3.2.0
 info:
   x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
   contact:
     email: support@rigetti.com
     url: https://rigetti.zendesk.com
-  title: Rigetti QCS account reservations API
+  title: Rigetti QCS Reservations API
   version: 2020-07-31
-  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+  description: '# Introduction
+
+
+    This is the documentation for the Rigetti QCS HTTP API.'
 servers:
 - description: Rigetti API
   url: https://api.qcs.rigetti.com
 tags:
 - description: Find existing time on a Rigetti QPU and reserve it.
-  name: reservations
+  name: Reservations
   x-displayName: Reservations
 paths:
   /v1/calendars/{quantumProcessorId}:
@@ -46,7 +49,7 @@ paths:
           description: The requested quantum processor does not exist.
       summary: Get Quantum Processor Calendar
       tags:
-      - reservations
+      - Reservations
       security:
       - JWTBearer: []
   /v1/groups/{groupName}/reservations:
@@ -77,9 +80,7 @@ paths:
 
         * `createdTime` - timestamp
 
-        * `price` - integer
-
-        '
+        * `price` - integer'
       operationId: ListGroupReservations
       parameters:
       - description: URL encoded name of group for which to retrieve reservations.
@@ -116,7 +117,7 @@ paths:
       - JWTBearer: []
       summary: List Group Reservations
       tags:
-      - reservations
+      - Reservations
   /v1/reservations:
     parameters: []
     get:
@@ -152,9 +153,7 @@ paths:
 
         * `createdTime` - timestamp
 
-        * `price` - integer
-
-        '
+        * `price` - integer'
       operationId: ListReservations
       parameters:
       - $ref: '#/components/parameters/filterParam'
@@ -187,7 +186,7 @@ paths:
       - JWTBearer: []
       summary: List Reservations
       tags:
-      - reservations
+      - Reservations
     post:
       description: 'Create a new reservation.
 
@@ -202,9 +201,7 @@ paths:
 
         * request body `accountType` field, or if unset then `X-QCS-ACCOUNT-TYPE`
 
-        header, or if unset then "user" type.
-
-        '
+        header, or if unset then "user" type.'
       operationId: CreateReservation
       parameters:
       - $ref: '#/components/parameters/accountIdHeader'
@@ -256,7 +253,7 @@ paths:
       - JWTBearer: []
       summary: Create Reservation
       tags:
-      - reservations
+      - Reservations
   /v1/reservations/{reservationId}:
     parameters:
     - in: path
@@ -296,7 +293,7 @@ paths:
       - JWTBearer: []
       summary: Get Reservation
       tags:
-      - reservations
+      - Reservations
     delete:
       description: Cancel an existing reservation for the user.
       operationId: DeleteReservation
@@ -329,7 +326,7 @@ paths:
       - JWTBearer: []
       summary: Delete Reservation
       tags:
-      - reservations
+      - Reservations
   /v1/reservations:findAvailable:
     parameters: []
     get:
@@ -378,15 +375,44 @@ paths:
       - JWTBearer: []
       summary: Find Available Reservations
       tags:
-      - reservations
+      - Reservations
 components:
   parameters:
+    showDeleted:
+      description: If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`.
+      in: query
+      name: showDeleted
+      required: false
+      schema:
+        default: 'false'
+        enum:
+        - 'true'
+        - 'false'
+        type: string
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
     orderParam:
       in: query
       name: order
       required: false
       schema:
         $ref: '#/components/schemas/Order'
+    accountIdHeader:
+      description: 'Used to specify a subject account ID for a request.
+
+        Does not take precedence over a corresponding request body field when one
+
+        is present.
+
+        '
+      in: header
+      name: X-QCS-ACCOUNT-ID
+      schema:
+        $ref: '#/components/schemas/AccountId'
     accountTypeHeader:
       description: 'Used to specify the subject account''s type for a request
 
@@ -401,40 +427,6 @@ components:
       name: X-QCS-ACCOUNT-TYPE
       schema:
         $ref: '#/components/schemas/AccountType'
-    pageSizeParam:
-      in: query
-      name: pageSize
-      required: false
-      schema:
-        type: integer
-    showDeleted:
-      description: If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`.
-      in: query
-      name: showDeleted
-      required: false
-      schema:
-        default: 'false'
-        enum:
-        - 'true'
-        - 'false'
-        type: string
-    filterParam:
-      in: query
-      name: filter
-      schema:
-        $ref: '#/components/schemas/Filter'
-    accountIdHeader:
-      description: 'Used to specify a subject account ID for a request.
-
-        Does not take precedence over a corresponding request body field when one
-
-        is present.
-
-        '
-      in: header
-      name: X-QCS-ACCOUNT-ID
-      schema:
-        $ref: '#/components/schemas/AccountId'
     pageTokenParam:
       description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
       in: query
@@ -442,62 +434,12 @@ components:
       required: false
       schema:
         type: string
+    filterParam:
+      in: query
+      name: filter
+      schema:
+        $ref: '#/components/schemas/Filter'
   schemas:
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    CreateReservationRequest:
-      properties:
-        accountId:
-          $ref: '#/components/schemas/AccountId'
-        accountType:
-          $ref: '#/components/schemas/AccountType'
-        endTime:
-          format: date-time
-          type: string
-        notes:
-          type: string
-        quantumProcessorId:
-          type: string
-        startTime:
-          format: date-time
-          type: string
-      required:
-      - quantumProcessorId
-      - startTime
-      - endTime
-      type: object
-    ListReservationsResponse:
-      properties:
-        nextPageToken:
-          type: string
-        reservations:
-          items:
-            $ref: '#/components/schemas/Reservation'
-          type: array
-      required:
-      - reservations
-      - nextPageToken
-      type: object
     Error:
       properties:
         code:
@@ -520,9 +462,6 @@ components:
       - requestId
       title: Error
       type: object
-    Filter:
-      description: "A string conforming to a *limited* set of the filtering operations described in [Google AIP 160](https://google.aip.dev/160).\n\n* Expressions are always of the form `{field} {operator} {value}` and may be grouped with `()` and joined with `AND` or `OR`.\n* Fields are specific to the route in question, but are typically a subset of attributes of the requested resource.\n* Operators are limited to `=`, `>`, `>=`, `<`, `<=`, and `!=`.\n* Values may take the following forms:\n  * `true` or `false` for boolean fields\n  * a number\n  * a string (include surrounding `\"`s),\n  * a duration string (include surrounding `\"`s). Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\n  * a date string (include surrounding `\"`s). Should be formatted [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nFor example, `startTime >= \"2020-06-24T22:00:00.000Z\" OR (duration >= \"15m\" AND endTime < \"2020-06-24T22:00:00.000Z\")`.\n"
-      type: string
     AvailableReservation:
       properties:
         duration:
@@ -544,9 +483,25 @@ components:
       - duration
       - price
       type: object
-    AccountId:
-      description: userId for `accountType` "user", group name for `accountType` "group".
+    AccountType:
+      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
+      default: user
+      enum:
+      - group
+      - user
       type: string
+    ListReservationsResponse:
+      properties:
+        nextPageToken:
+          type: string
+        reservations:
+          items:
+            $ref: '#/components/schemas/Reservation'
+          type: array
+      required:
+      - reservations
+      - nextPageToken
+      type: object
     FindAvailableReservationsResponse:
       properties:
         availableReservations:
@@ -557,32 +512,6 @@ components:
           type: string
       required:
       - availableReservations
-      type: object
-    Order:
-      description: 'A string conforming to order specification described in [Google
-
-        AIP 132](https://google.aip.dev/132#ordering).
-
-
-        * Fields are specific to the route in question, but are typically a subset
-
-        of attributes of the requested resource.
-
-        * May include a comma separated list of many fields.
-
-        * Fields are sorted in *ascending* order unless the field is followed by `DESC`.
-
-
-        For example, `quantumProcessorId, startTime DESC`.
-
-        '
-      type: string
-    QuantumProcessorCalendar:
-      description: Details about calendars related to a quantum processor.
-      properties:
-        maintenanceICal:
-          description: This calendar's schedule contains maintenance events for the QPU, during which execution is not available.
-          type: string
       type: object
     Reservation:
       properties:
@@ -635,13 +564,81 @@ components:
       - createdTime
       - price
       type: object
-    AccountType:
-      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
-      default: user
-      enum:
-      - group
-      - user
+    QuantumProcessorCalendar:
+      description: Details about calendars related to a quantum processor.
+      properties:
+        maintenanceICal:
+          description: This calendar's schedule contains maintenance events for the QPU, during which execution is not available.
+          type: string
+      type: object
+    Filter:
+      description: "A string conforming to a *limited* set of the filtering operations described in [Google AIP 160](https://google.aip.dev/160).\n\n* Expressions are always of the form `{field} {operator} {value}` and may be grouped with `()` and joined with `AND` or `OR`.\n* Fields are specific to the route in question, but are typically a subset of attributes of the requested resource.\n* Operators are limited to `=`, `>`, `>=`, `<`, `<=`, and `!=`.\n* Values may take the following forms:\n  * `true` or `false` for boolean fields\n  * a number\n  * a string (include surrounding `\"`s),\n  * a duration string (include surrounding `\"`s). Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\n  * a date string (include surrounding `\"`s). Should be formatted [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nFor example, `startTime >= \"2020-06-24T22:00:00.000Z\" OR (duration >= \"15m\" AND endTime < \"2020-06-24T22:00:00.000Z\")`.\n"
       type: string
+    Order:
+      description: 'A string conforming to order specification described in [Google
+
+        AIP 132](https://google.aip.dev/132#ordering).
+
+
+        * Fields are specific to the route in question, but are typically a subset
+
+        of attributes of the requested resource.
+
+        * May include a comma separated list of many fields.
+
+        * Fields are sorted in *ascending* order unless the field is followed by `DESC`.
+
+
+        For example, `quantumProcessorId, startTime DESC`.
+
+        '
+      type: string
+    CreateReservationRequest:
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        endTime:
+          format: date-time
+          type: string
+        notes:
+          type: string
+        quantumProcessorId:
+          type: string
+        startTime:
+          format: date-time
+          type: string
+      required:
+      - quantumProcessorId
+      - startTime
+      - endTime
+      type: object
+    AccountId:
+      description: userId for `accountType` "user", group name for `accountType` "group".
+      type: string
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

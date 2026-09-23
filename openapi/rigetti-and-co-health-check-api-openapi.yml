@@ -4,7 +4,7 @@ info:
   contact:
     email: support@rigetti.com
     url: https://rigetti.zendesk.com
-  title: Rigetti QCS API
+  title: Rigetti QCS Healthcheck API
   version: 2020-07-31
   description: '# Introduction
 
@@ -14,75 +14,19 @@ servers:
 - description: Rigetti API
   url: https://api.qcs.rigetti.com
 tags:
-- name: Rigetti QCS API
+- name: Health Check
 paths:
-  /:
+  /v1/healthcheck:
     get:
-      description: Retrieve the health status of the API
-      operationId: GetHealth
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Health'
-          description: Critical services are healthy.
-      tags:
-      - Rigetti QCS API
-      summary: Get health
-      x-summary-source: derived
-  /v1/:
-    get:
-      deprecated: true
-      description: Endpoint to return a status 200 for load balancer health checks
-      operationId: HealthCheckDeprecated
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful Response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: Unprocessable Entity
       summary: Health Check
+      description: Check the health of the service.
+      responses:
+        '200':
+          description: The service is healthy, but there are no additional details.
+      operationId: HealthCheck
       tags:
-      - Rigetti QCS API
+      - Health Check
 components:
-  schemas:
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    Health:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          example: PASS
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

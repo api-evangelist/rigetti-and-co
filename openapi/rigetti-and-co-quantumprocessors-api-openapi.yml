@@ -1,12 +1,15 @@
-openapi: 3.0.2
+openapi: 3.2.0
 info:
   x-logo: https://qcs.rigetti.com/static/img/rigetti-logo.svg
   contact:
     email: support@rigetti.com
     url: https://rigetti.zendesk.com
-  title: Rigetti QCS account quantumProcessors API
+  title: Rigetti QCS Quantum Processors API
   version: 2020-07-31
-  description: "# Introduction\n\nThis is the documentation for the Rigetti QCS HTTP API.\n\nYou can find out more about Rigetti at [https://rigetti.com](https://rigetti.com), and also\ninteract with QCS via the web at [https://qcs.rigetti.com](https://qcs.rigetti.com).\n\nThis API is documented in **OpenAPI format** and so is compatible with the dozens of\nlanguage-specific client generators available\n[here](https://github.com/OpenAPITools/openapi-generator) and elsewhere on the web.\n\n# Principles\n\nThis API follows REST design principles where appropriate, and otherwise an HTTP RPC paradigm.\nWe adhere to the Google [API Improvement Proposals](https://google.aip.dev/general) where\nreasonable to provide a consistent, intuitive developer experience. HTTP response codes match\ntheir specifications, and error messages fit a common format.\n\n# Authentication\n\nAll access to the QCS API requires OAuth2 authentication provided by Okta. You can request\naccess [here](https://www.rigetti.com/get-quantum). Once you have a user account, you can download\nyour access token from QCS [here](https://qcs.rigetti.com/auth/token). \n\nThat access token is valid for 24 hours after issuance. The value of `access_token` within the\nJSON file is the token used for authentication (don't use the entire JSON file).\n\nAuthenticate requests using the `Authorization` header and a `Bearer` prefix:\n\n```\ncurl --header \"Authorization: Bearer eyJraW...Iow\"\n```\n\n# Quantum Processor Access\n\nAccess to the quantum processors themselves is not yet provided directly by this HTTP API, but\nis instead performed over ZeroMQ/[rpcq](https://github.com/rigetti/rpcq). Until that changes,\nwe suggest using [pyquil](https://github.com/rigetti/pyquil) to build and execute quantum\nprograms via the Legacy API.\n\n# Legacy API\n\nOur legacy HTTP API remains accessible at https://forest-server.qcs.rigetti.com, and it shares\na source of truth with this API's services. You can use either service with the same user\naccount and means of authentication. We strongly recommend using the API documented here, as the\nlegacy API is on the path to deprecation.\n"
+  description: '# Introduction
+
+
+    This is the documentation for the Rigetti QCS HTTP API.'
 servers:
 - description: Rigetti API
   url: https://api.qcs.rigetti.com
@@ -67,8 +70,7 @@ paths:
           format: uint64
           title: How many items to return in a single page.
           default: 10
-          minimum: 0
-          exclusiveMinimum: true
+          exclusiveMinimum: 0
         in: query
         required: false
         deprecated: false
@@ -187,8 +189,7 @@ paths:
           title: How many items to return in a single page.
           default: 5
           maximum: 5
-          minimum: 0
-          exclusiveMinimum: true
+          exclusiveMinimum: 0
         in: query
         required: false
         deprecated: false
@@ -225,182 +226,6 @@ paths:
       operationId: ListInstructionSetArchitectures
 components:
   schemas:
-    QuantumProcessor:
-      type: object
-      title: QuantumProcessor
-      description: An object representing a quantum processor.
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: 'Immutable, unique identifier for a quantum processor [example: Aspen-1]'
-    Family:
-      type: string
-      description: 'Family identifier.
-
-
-        Value ''None'' implies the architecture has no specific layout topology.
-
-        Value ''Full'' implies that each node is connected to every other (a fully-connected architecture)
-
-
-        For other values based on deployed architecture layouts (e.g. `Aspen` and `Ankaa`), refer to
-
-        the architecture classes themselves for more details.'
-      enum:
-      - None
-      - Full
-      - Aspen
-      - Ankaa
-    OperationSite:
-      type: object
-      title: OperationSite
-      description: A site for an operation, with its site-dependent characteristics.
-      required:
-      - node_ids
-      - characteristics
-      properties:
-        node_ids:
-          type: array
-          description: 'The list of architecture node ids for the site. The order of these node ids
-
-            obey the definition of node symmetry from the enclosing operation.'
-          items:
-            type: integer
-            format: uint64
-            title: A node integer identifier; must be greater than or equal to zero.
-          minItems: 1
-          uniqueItems: true
-        characteristics:
-          type: array
-          description: The list of site-dependent characteristics of this operation.
-          items:
-            $ref: '#/components/schemas/Characteristic'
-    Operation:
-      type: object
-      title: Operation
-      description: An operation, with its sites and site-independent characteristics.
-      required:
-      - name
-      - parameters
-      - sites
-      - characteristics
-      properties:
-        name:
-          type: string
-          title: The format of a name (an identifier).
-          description: The name of the operation.
-        node_count:
-          type: integer
-          format: uint64
-          description: The number of nodes that this operation applies to. None if unspecified.
-          minimum: 0
-          exclusiveMinimum: true
-        parameters:
-          type: array
-          description: The list of parameters. Each parameter must be uniquely named. May be empty.
-          items:
-            $ref: '#/components/schemas/Parameter'
-        sites:
-          type: array
-          description: The list of sites at which this operation can be applied, together with its site-dependent characteristics.
-          items:
-            $ref: '#/components/schemas/OperationSite'
-        characteristics:
-          type: array
-          description: The list of site-independent characteristics of this operation.
-          items:
-            $ref: '#/components/schemas/Characteristic'
-    QuantumProcessorAccessorType:
-      type: string
-      description: Type of the accessor. Each accessor type is a different mechanism of accessing a QPU, each with their own benefits and/or drawbacks.
-      enum:
-      - gateway.v1
-      - direct.v1
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    Parameter:
-      type: object
-      title: Parameter
-      description: A parameter to an operation.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          title: The format of a name (an identifier).
-          description: The name of the parameter, such as the name of a mathematical symbol.
-    Characteristic:
-      type: object
-      title: Characteristic
-      description: A measured characteristic of an operation.
-      required:
-      - name
-      - value
-      - timestamp
-      properties:
-        name:
-          type: string
-          title: The format of a name (an identifier).
-          description: The name of the characteristic.
-        value:
-          type: number
-          format: double
-          description: The characteristic value measured.
-        error:
-          type: number
-          format: double
-          description: The error in the characteristic value, or None otherwise.
-        node_ids:
-          type: array
-          description: 'The list of architecture node ids for the site where the characteristic is
-
-            measured, if that is different from the site of the enclosing operation.
-
-            None if it is the same. The order of this or the enclosing node ids obey
-
-            the definition of node symmetry from the enclosing operation.'
-          items:
-            type: integer
-            format: uint64
-            title: A node integer identifier; must be greater than or equal to zero.
-          minItems: 1
-          uniqueItems: true
-        timestamp:
-          type: string
-          format: date-time
-          description: The date and time at which the characteristic was measured.
-        parameter_values:
-          type: array
-          description: 'The optional ordered list of parameter values used to generate the
-
-            characteristic. The order matches the parameters in the enclosing operation,
-
-            and so the lengths of these two lists must match.'
-          items:
-            type: number
-            format: double
     Architecture:
       type: object
       title: Architecture
@@ -496,115 +321,6 @@ components:
           description: The list of benchmarks that have characterized the quantum processor.
           items:
             $ref: '#/components/schemas/Operation'
-    Edge:
-      type: object
-      title: Edge
-      description: 'A degree-two logical connection in the quantum processor''s architecture.
-
-
-        The existence of an edge in the ISA `Architecture` does not necessarily mean that a given 2Q
-
-        operation will be available on the edge. This information is conveyed by the presence of the
-
-        two `node_id` values in instances of `Instruction`.
-
-
-        Note that edges are undirected in this model. Thus edge `(a, b)` is equivalent to edge
-
-        `(b, a)`.'
-      required:
-      - node_ids
-      properties:
-        node_ids:
-          type: array
-          description: 'The integer ids of the computational nodes at the two ends of the edge.
-
-            Order is not important; an architecture edge is treated as undirected.'
-          items:
-            type: integer
-            format: uint64
-            title: A node integer identifier; must be greater than or equal to zero.
-          maxItems: 2
-          minItems: 2
-    Error:
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        requestId:
-          title: Request ID
-          type: string
-        validationErrors:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Validation Errors
-          type: array
-      required:
-      - code
-      - message
-      - requestId
-      title: Error
-      type: object
-    ListQuantumProcessorsResponse:
-      type: object
-      required:
-      - quantumProcessors
-      properties:
-        nextPageToken:
-          type: string
-          description: Send an opaque page token returned from a prior request
-        quantumProcessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuantumProcessor'
-    ListInstructionSetArchitectureResponse:
-      type: object
-      required:
-      - instructionSetArchitectures
-      properties:
-        nextPageToken:
-          type: string
-          description: Send an opaque page token returned from a prior request
-        instructionSetArchitectures:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstructionSetArchitecture'
-    Node:
-      type: object
-      title: Node
-      description: 'A logical node in the quantum processor''s architecture.
-
-
-        The existence of a node in the ISA `Architecture` does not necessarily mean that a given 1Q
-
-        operation will be available on the node. This information is conveyed by the presence of the
-
-        specific `node_id` in instances of `Instruction`.'
-      required:
-      - node_id
-      properties:
-        node_id:
-          type: integer
-          format: uint64
-          title: A node integer identifier; must be greater than or equal to zero.
-          description: 'An integer id assigned to the computational node. The ids may not be contiguous and will be assigned based
-
-            on the architecture family.'
-    ListQuantumProcessorAccessorsResponse:
-      type: object
-      required:
-      - accessors
-      properties:
-        nextPageToken:
-          type: string
-          description: Send an opaque page token returned from a prior request
-        accessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuantumProcessorAccessor'
     QuantumProcessorAccessor:
       type: object
       title: QuantumProcessorAccessor
@@ -643,6 +359,290 @@ components:
 
             purposes, that with the lower rank value should be used for access.'
           deprecated: true
+    Parameter:
+      type: object
+      title: Parameter
+      description: A parameter to an operation.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          title: The format of a name (an identifier).
+          description: The name of the parameter, such as the name of a mathematical symbol.
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    Family:
+      type: string
+      description: 'Family identifier.
+
+
+        Value ''None'' implies the architecture has no specific layout topology.
+
+        Value ''Full'' implies that each node is connected to every other (a fully-connected architecture)
+
+
+        For other values based on deployed architecture layouts (e.g. `Aspen` and `Ankaa`), refer to
+
+        the architecture classes themselves for more details.'
+      enum:
+      - None
+      - Full
+      - Aspen
+      - Ankaa
+    Edge:
+      type: object
+      title: Edge
+      description: 'A degree-two logical connection in the quantum processor''s architecture.
+
+
+        The existence of an edge in the ISA `Architecture` does not necessarily mean that a given 2Q
+
+        operation will be available on the edge. This information is conveyed by the presence of the
+
+        two `node_id` values in instances of `Instruction`.
+
+
+        Note that edges are undirected in this model. Thus edge `(a, b)` is equivalent to edge
+
+        `(b, a)`.'
+      required:
+      - node_ids
+      properties:
+        node_ids:
+          type: array
+          description: 'The integer ids of the computational nodes at the two ends of the edge.
+
+            Order is not important; an architecture edge is treated as undirected.'
+          items:
+            type: integer
+            format: uint64
+            title: A node integer identifier; must be greater than or equal to zero.
+          maxItems: 2
+          minItems: 2
+    ListInstructionSetArchitectureResponse:
+      type: object
+      required:
+      - instructionSetArchitectures
+      properties:
+        nextPageToken:
+          type: string
+          description: Send an opaque page token returned from a prior request
+        instructionSetArchitectures:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstructionSetArchitecture'
+    Operation:
+      type: object
+      title: Operation
+      description: An operation, with its sites and site-independent characteristics.
+      required:
+      - name
+      - parameters
+      - sites
+      - characteristics
+      properties:
+        name:
+          type: string
+          title: The format of a name (an identifier).
+          description: The name of the operation.
+        node_count:
+          type: integer
+          format: uint64
+          description: The number of nodes that this operation applies to. None if unspecified.
+          exclusiveMinimum: 0
+        parameters:
+          type: array
+          description: The list of parameters. Each parameter must be uniquely named. May be empty.
+          items:
+            $ref: '#/components/schemas/Parameter'
+        sites:
+          type: array
+          description: The list of sites at which this operation can be applied, together with its site-dependent characteristics.
+          items:
+            $ref: '#/components/schemas/OperationSite'
+        characteristics:
+          type: array
+          description: The list of site-independent characteristics of this operation.
+          items:
+            $ref: '#/components/schemas/Characteristic'
+    Characteristic:
+      type: object
+      title: Characteristic
+      description: A measured characteristic of an operation.
+      required:
+      - name
+      - value
+      - timestamp
+      properties:
+        name:
+          type: string
+          title: The format of a name (an identifier).
+          description: The name of the characteristic.
+        value:
+          type: number
+          format: double
+          description: The characteristic value measured.
+        error:
+          type: number
+          format: double
+          description: The error in the characteristic value, or None otherwise.
+        node_ids:
+          type: array
+          description: 'The list of architecture node ids for the site where the characteristic is
+
+            measured, if that is different from the site of the enclosing operation.
+
+            None if it is the same. The order of this or the enclosing node ids obey
+
+            the definition of node symmetry from the enclosing operation.'
+          items:
+            type: integer
+            format: uint64
+            title: A node integer identifier; must be greater than or equal to zero.
+          minItems: 1
+          uniqueItems: true
+        timestamp:
+          type: string
+          format: date-time
+          description: The date and time at which the characteristic was measured.
+        parameter_values:
+          type: array
+          description: 'The optional ordered list of parameter values used to generate the
+
+            characteristic. The order matches the parameters in the enclosing operation,
+
+            and so the lengths of these two lists must match.'
+          items:
+            type: number
+            format: double
+    Node:
+      type: object
+      title: Node
+      description: 'A logical node in the quantum processor''s architecture.
+
+
+        The existence of a node in the ISA `Architecture` does not necessarily mean that a given 1Q
+
+        operation will be available on the node. This information is conveyed by the presence of the
+
+        specific `node_id` in instances of `Instruction`.'
+      required:
+      - node_id
+      properties:
+        node_id:
+          type: integer
+          format: uint64
+          title: A node integer identifier; must be greater than or equal to zero.
+          description: 'An integer id assigned to the computational node. The ids may not be contiguous and will be assigned based
+
+            on the architecture family.'
+    QuantumProcessorAccessorType:
+      type: string
+      description: Type of the accessor. Each accessor type is a different mechanism of accessing a QPU, each with their own benefits and/or drawbacks.
+      enum:
+      - gateway.v1
+      - direct.v1
+    OperationSite:
+      type: object
+      title: OperationSite
+      description: A site for an operation, with its site-dependent characteristics.
+      required:
+      - node_ids
+      - characteristics
+      properties:
+        node_ids:
+          type: array
+          description: 'The list of architecture node ids for the site. The order of these node ids
+
+            obey the definition of node symmetry from the enclosing operation.'
+          items:
+            type: integer
+            format: uint64
+            title: A node integer identifier; must be greater than or equal to zero.
+          minItems: 1
+          uniqueItems: true
+        characteristics:
+          type: array
+          description: The list of site-dependent characteristics of this operation.
+          items:
+            $ref: '#/components/schemas/Characteristic'
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    ListQuantumProcessorAccessorsResponse:
+      type: object
+      required:
+      - accessors
+      properties:
+        nextPageToken:
+          type: string
+          description: Send an opaque page token returned from a prior request
+        accessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuantumProcessorAccessor'
+    ListQuantumProcessorsResponse:
+      type: object
+      required:
+      - quantumProcessors
+      properties:
+        nextPageToken:
+          type: string
+          description: Send an opaque page token returned from a prior request
+        quantumProcessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuantumProcessor'
+    QuantumProcessor:
+      type: object
+      title: QuantumProcessor
+      description: An object representing a quantum processor.
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: 'Immutable, unique identifier for a quantum processor [example: Aspen-1]'
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

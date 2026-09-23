@@ -1,30 +1,44 @@
 {
   "provider": "rigetti-and-co",
   "sources": [
-    "rigetti-and-co-account-api-openapi.yml",
-    "rigetti-and-co-authentication-api-openapi.yml",
-    "rigetti-and-co-clientapplications-api-openapi.yml",
-    "rigetti-and-co-endpoints-api-openapi.yml",
-    "rigetti-and-co-engagements-api-openapi.yml",
-    "rigetti-and-co-healthcheck-api-openapi.yml",
-    "rigetti-and-co-quantumprocessors-api-openapi.yml",
-    "rigetti-and-co-reservations-api-openapi.yml",
-    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml"
+    "_original/rigetti-and-co-qcs-openapi.yml"
   ],
   "outputs": [
+    "rigetti-and-co-healthcheck-api-openapi.yml",
+    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml",
     "rigetti-and-co-account-api-openapi.yml",
     "rigetti-and-co-authentication-api-openapi.yml",
     "rigetti-and-co-clientapplications-api-openapi.yml",
     "rigetti-and-co-endpoints-api-openapi.yml",
     "rigetti-and-co-engagements-api-openapi.yml",
-    "rigetti-and-co-healthcheck-api-openapi.yml",
     "rigetti-and-co-quantumprocessors-api-openapi.yml",
-    "rigetti-and-co-reservations-api-openapi.yml",
-    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml"
+    "rigetti-and-co-reservations-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "rigetti-and-co-qcs-openapi.yml: upgraded openapi 3.0.2 -> OpenAPI 3.2.0",
+    "rigetti-and-co-qcs-openapi.yml: tagged paths GET / -> Rigetti QCS API",
+    "rigetti-and-co-qcs-openapi.yml: tagged paths GET /v1/ -> Rigetti QCS API",
+    "rigetti-and-co-qcs-openapi.yml: tagged paths GET /v1/healthcheck -> Healthcheck",
+    "rigetti-and-co-qcs-openapi.yml: declared missing tag: Healthcheck",
+    "rigetti-and-co-qcs-openapi.yml: declared missing tag: Rigetti QCS API",
+    "superseded outputs removed: rigetti-and-co-health-check-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 9 total)"
+  ],
+  "skipped": [
+    "rigetti-and-co-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-clientapplications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-endpoints-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-engagements-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-health-check-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-quantumprocessors-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-reservations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "rigetti-and-co-rigetti-qcs-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
