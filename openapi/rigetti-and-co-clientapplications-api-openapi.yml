@@ -93,85 +93,28 @@ paths:
       - clientApplications
 components:
   schemas:
-    CheckClientApplicationResponse:
+    ClientApplication:
       properties:
-        isLatestVersion:
-          type: boolean
-        isUpdateRequired:
-          description: Set to true if component is not at latest version.
-          type: boolean
-        message:
+        detailsUri:
           type: string
-      required:
-      - isLatestVersion
-      - isUpdateRequired
-      - message
-      type: object
-    CheckClientApplicationRequest:
-      properties:
+        latestVersion:
+          description: Semantic version
+          type: string
+        links:
+          items:
+            $ref: '#/components/schemas/ClientApplicationsDownloadLink'
+          type: array
+        minimumVersion:
+          description: Semantic version
+          type: string
         name:
-          description: Name of component
           type: string
-        version:
-          description: Semantic version of component.
-          type: string
+        supported:
+          type: boolean
       required:
+      - latestVersion
       - name
-      - version
-      type: object
-    Error:
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        requestId:
-          title: Request ID
-          type: string
-        validationErrors:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Validation Errors
-          type: array
-      required:
-      - code
-      - message
-      - requestId
-      title: Error
-      type: object
-    ChecksumDescription:
-      properties:
-        headerName:
-          type: string
-        type:
-          enum:
-          - md5
-          type: string
-      required:
-      - headerName
-      - type
-      type: object
-    ClientApplicationsDownloadLink:
-      properties:
-        checksumDescription:
-          $ref: '#/components/schemas/ChecksumDescription'
-        platform:
-          type: string
-        url:
-          type: string
-      required:
-      - url
-      type: object
-    ListClientApplicationsResponse:
-      properties:
-        clientApplications:
-          items:
-            $ref: '#/components/schemas/ClientApplication'
-          type: array
-      required:
-      - clientApplications
+      - supported
       type: object
     ValidationError:
       properties:
@@ -195,28 +138,85 @@ components:
       - message
       title: ValidationError
       type: object
-    ClientApplication:
+    ListClientApplicationsResponse:
       properties:
-        detailsUri:
-          type: string
-        latestVersion:
-          description: Semantic version
-          type: string
-        links:
+        clientApplications:
           items:
-            $ref: '#/components/schemas/ClientApplicationsDownloadLink'
+            $ref: '#/components/schemas/ClientApplication'
           type: array
-        minimumVersion:
-          description: Semantic version
-          type: string
-        name:
-          type: string
-        supported:
-          type: boolean
       required:
-      - latestVersion
+      - clientApplications
+      type: object
+    CheckClientApplicationResponse:
+      properties:
+        isLatestVersion:
+          type: boolean
+        isUpdateRequired:
+          description: Set to true if component is not at latest version.
+          type: boolean
+        message:
+          type: string
+      required:
+      - isLatestVersion
+      - isUpdateRequired
+      - message
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    ClientApplicationsDownloadLink:
+      properties:
+        checksumDescription:
+          $ref: '#/components/schemas/ChecksumDescription'
+        platform:
+          type: string
+        url:
+          type: string
+      required:
+      - url
+      type: object
+    CheckClientApplicationRequest:
+      properties:
+        name:
+          description: Name of component
+          type: string
+        version:
+          description: Semantic version of component.
+          type: string
+      required:
       - name
-      - supported
+      - version
+      type: object
+    ChecksumDescription:
+      properties:
+        headerName:
+          type: string
+        type:
+          enum:
+          - md5
+          type: string
+      required:
+      - headerName
+      - type
       type: object
   securitySchemes:
     JWTBearer:

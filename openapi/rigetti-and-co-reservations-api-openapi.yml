@@ -377,69 +377,18 @@ paths:
       tags:
       - Reservations
 components:
-  parameters:
-    showDeleted:
-      description: If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`.
-      in: query
-      name: showDeleted
-      required: false
-      schema:
-        default: 'false'
-        enum:
-        - 'true'
-        - 'false'
-        type: string
-    pageSizeParam:
-      in: query
-      name: pageSize
-      required: false
-      schema:
-        type: integer
-    orderParam:
-      in: query
-      name: order
-      required: false
-      schema:
-        $ref: '#/components/schemas/Order'
-    accountIdHeader:
-      description: 'Used to specify a subject account ID for a request.
-
-        Does not take precedence over a corresponding request body field when one
-
-        is present.
-
-        '
-      in: header
-      name: X-QCS-ACCOUNT-ID
-      schema:
-        $ref: '#/components/schemas/AccountId'
-    accountTypeHeader:
-      description: 'Used to specify the subject account''s type for a request
-
-        in conjunction with the X-QCS-ACCOUNT-ID header.
-
-        Does not take precedence over a corresponding request body field when one
-
-        is present.
-
-        '
-      in: header
-      name: X-QCS-ACCOUNT-TYPE
-      schema:
-        $ref: '#/components/schemas/AccountType'
-    pageTokenParam:
-      description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
-      in: query
-      name: pageToken
-      required: false
-      schema:
-        type: string
-    filterParam:
-      in: query
-      name: filter
-      schema:
-        $ref: '#/components/schemas/Filter'
   schemas:
+    FindAvailableReservationsResponse:
+      properties:
+        availableReservations:
+          items:
+            $ref: '#/components/schemas/AvailableReservation'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - availableReservations
+      type: object
     Error:
       properties:
         code:
@@ -462,34 +411,32 @@ components:
       - requestId
       title: Error
       type: object
-    AvailableReservation:
-      properties:
-        duration:
-          type: string
-        endTime:
-          format: date-time
-          type: string
-        price:
-          type: integer
-        quantumProcessorId:
-          type: string
-        startTime:
-          format: date-time
-          type: string
-      required:
-      - quantumProcessorId
-      - startTime
-      - endTime
-      - duration
-      - price
-      type: object
-    AccountType:
-      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
-      default: user
-      enum:
-      - group
-      - user
+    Order:
+      description: 'A string conforming to order specification described in [Google
+
+        AIP 132](https://google.aip.dev/132#ordering).
+
+
+        * Fields are specific to the route in question, but are typically a subset
+
+        of attributes of the requested resource.
+
+        * May include a comma separated list of many fields.
+
+        * Fields are sorted in *ascending* order unless the field is followed by `DESC`.
+
+
+        For example, `quantumProcessorId, startTime DESC`.
+
+        '
       type: string
+    QuantumProcessorCalendar:
+      description: Details about calendars related to a quantum processor.
+      properties:
+        maintenanceICal:
+          description: This calendar's schedule contains maintenance events for the QPU, during which execution is not available.
+          type: string
+      type: object
     ListReservationsResponse:
       properties:
         nextPageToken:
@@ -501,17 +448,6 @@ components:
       required:
       - reservations
       - nextPageToken
-      type: object
-    FindAvailableReservationsResponse:
-      properties:
-        availableReservations:
-          items:
-            $ref: '#/components/schemas/AvailableReservation'
-          type: array
-        nextPageToken:
-          type: string
-      required:
-      - availableReservations
       type: object
     Reservation:
       properties:
@@ -564,34 +500,34 @@ components:
       - createdTime
       - price
       type: object
-    QuantumProcessorCalendar:
-      description: Details about calendars related to a quantum processor.
+    ValidationError:
       properties:
-        maintenanceICal:
-          description: This calendar's schedule contains maintenance events for the QPU, during which execution is not available.
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
           type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
       type: object
-    Filter:
-      description: "A string conforming to a *limited* set of the filtering operations described in [Google AIP 160](https://google.aip.dev/160).\n\n* Expressions are always of the form `{field} {operator} {value}` and may be grouped with `()` and joined with `AND` or `OR`.\n* Fields are specific to the route in question, but are typically a subset of attributes of the requested resource.\n* Operators are limited to `=`, `>`, `>=`, `<`, `<=`, and `!=`.\n* Values may take the following forms:\n  * `true` or `false` for boolean fields\n  * a number\n  * a string (include surrounding `\"`s),\n  * a duration string (include surrounding `\"`s). Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\n  * a date string (include surrounding `\"`s). Should be formatted [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nFor example, `startTime >= \"2020-06-24T22:00:00.000Z\" OR (duration >= \"15m\" AND endTime < \"2020-06-24T22:00:00.000Z\")`.\n"
-      type: string
-    Order:
-      description: 'A string conforming to order specification described in [Google
-
-        AIP 132](https://google.aip.dev/132#ordering).
-
-
-        * Fields are specific to the route in question, but are typically a subset
-
-        of attributes of the requested resource.
-
-        * May include a comma separated list of many fields.
-
-        * Fields are sorted in *ascending* order unless the field is followed by `DESC`.
-
-
-        For example, `quantumProcessorId, startTime DESC`.
-
-        '
+    AccountType:
+      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
+      default: user
+      enum:
+      - group
+      - user
       type: string
     CreateReservationRequest:
       properties:
@@ -617,28 +553,92 @@ components:
     AccountId:
       description: userId for `accountType` "user", group name for `accountType` "group".
       type: string
-    ValidationError:
+    Filter:
+      description: "A string conforming to a *limited* set of the filtering operations described in [Google AIP 160](https://google.aip.dev/160).\n\n* Expressions are always of the form `{field} {operator} {value}` and may be grouped with `()` and joined with `AND` or `OR`.\n* Fields are specific to the route in question, but are typically a subset of attributes of the requested resource.\n* Operators are limited to `=`, `>`, `>=`, `<`, `<=`, and `!=`.\n* Values may take the following forms:\n  * `true` or `false` for boolean fields\n  * a number\n  * a string (include surrounding `\"`s),\n  * a duration string (include surrounding `\"`s). Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".\n  * a date string (include surrounding `\"`s). Should be formatted [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nFor example, `startTime >= \"2020-06-24T22:00:00.000Z\" OR (duration >= \"15m\" AND endTime < \"2020-06-24T22:00:00.000Z\")`.\n"
+      type: string
+    AvailableReservation:
       properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
+        duration:
           type: string
-        message:
-          title: Message
+        endTime:
+          format: date-time
           type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
+        price:
+          type: integer
+        quantumProcessorId:
+          type: string
+        startTime:
+          format: date-time
+          type: string
       required:
-      - in
-      - message
-      title: ValidationError
+      - quantumProcessorId
+      - startTime
+      - endTime
+      - duration
+      - price
       type: object
+  parameters:
+    showDeleted:
+      description: If you wish to include deleted (or cancelled) resources in your response, include `showDeleted=true`.
+      in: query
+      name: showDeleted
+      required: false
+      schema:
+        default: 'false'
+        enum:
+        - 'true'
+        - 'false'
+        type: string
+    orderParam:
+      in: query
+      name: order
+      required: false
+      schema:
+        $ref: '#/components/schemas/Order'
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+    filterParam:
+      in: query
+      name: filter
+      schema:
+        $ref: '#/components/schemas/Filter'
+    accountIdHeader:
+      description: 'Used to specify a subject account ID for a request.
+
+        Does not take precedence over a corresponding request body field when one
+
+        is present.
+
+        '
+      in: header
+      name: X-QCS-ACCOUNT-ID
+      schema:
+        $ref: '#/components/schemas/AccountId'
+    pageTokenParam:
+      description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
+      in: query
+      name: pageToken
+      required: false
+      schema:
+        type: string
+    accountTypeHeader:
+      description: 'Used to specify the subject account''s type for a request
+
+        in conjunction with the X-QCS-ACCOUNT-ID header.
+
+        Does not take precedence over a corresponding request body field when one
+
+        is present.
+
+        '
+      in: header
+      name: X-QCS-ACCOUNT-TYPE
+      schema:
+        $ref: '#/components/schemas/AccountType'
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

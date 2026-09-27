@@ -63,7 +63,7 @@ tags_raw:
 - API
 apis:
 - aid: rigetti-and-co:rigetti-and-co-account-api
-  name: Rigetti & Co account API
+  name: Rigetti & Co Account API
   description: The account API from Rigetti & Co — 22 operation(s) for account.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -79,7 +79,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-authentication-api
-  name: Rigetti & Co authentication API
+  name: Rigetti & Co Authentication API
   description: The authentication API from Rigetti & Co — 4 operation(s) for authentication.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -95,7 +95,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-clientapplications-api
-  name: Rigetti & Co clientApplications API
+  name: Rigetti & Co Client Applications API
   description: Check for the latest SDK versions.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -110,7 +110,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-endpoints-api
-  name: Rigetti & Co endpoints API
+  name: Rigetti & Co Endpoints API
   description: The Endpoint is the means of access to a Quantum Processor.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -125,7 +125,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-engagements-api
-  name: Rigetti & Co engagements API
+  name: Rigetti & Co Engagements API
   description: The Engagement is the authorization mechanism for access to the Quantum Processor.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -141,7 +141,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-quantumprocessors-api
-  name: Rigetti & Co quantumProcessors API
+  name: Rigetti & Co Quantum Processors API
   description: The Quantum Processor is the heart of the Rigetti services.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com
@@ -156,7 +156,7 @@ apis:
   - type: Protobuf
     url: grpc/rigetti-and-co-translation-service.proto
 - aid: rigetti-and-co:rigetti-and-co-reservations-api
-  name: Rigetti & Co reservations API
+  name: Rigetti & Co Reservations API
   description: Find existing time on a Rigetti QPU and reserve it.
   humanURL: https://docs.rigetti.com/qcs/
   baseURL: https://api.qcs.rigetti.com

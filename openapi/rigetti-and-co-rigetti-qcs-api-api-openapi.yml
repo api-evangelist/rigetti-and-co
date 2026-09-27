@@ -53,6 +53,14 @@ paths:
       - Rigetti QCS API
 components:
   schemas:
+    Health:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          example: PASS
     ValidationError:
       properties:
         in:
@@ -75,14 +83,6 @@ components:
       - message
       title: ValidationError
       type: object
-    Health:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          example: PASS
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

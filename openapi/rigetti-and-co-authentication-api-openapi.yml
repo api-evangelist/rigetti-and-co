@@ -129,6 +129,44 @@ paths:
       - Authentication
 components:
   schemas:
+    UserProfile:
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - email
+      - firstName
+      - lastName
+      - organization
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
     AuthResetPasswordWithTokenRequest:
       description: Token may be requested with AuthEmailPasswordResetToken.
       properties:
@@ -140,22 +178,28 @@ components:
       - token
       - newPassword
       type: object
-    AuthResetPasswordRequest:
-      properties:
-        newPassword:
-          type: string
-        oldPassword:
-          type: string
-      required:
-      - oldPassword
-      - newPassword
-      type: object
     AuthEmailPasswordResetTokenRequest:
       properties:
         email:
           type: string
       required:
       - email
+      type: object
+    User:
+      properties:
+        createdTime:
+          format: date-time
+          type: string
+        id:
+          type: integer
+        idpId:
+          type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+      required:
+      - id
+      - idpId
+      - createdTime
       type: object
     Error:
       properties:
@@ -179,59 +223,15 @@ components:
       - requestId
       title: Error
       type: object
-    UserProfile:
+    AuthResetPasswordRequest:
       properties:
-        email:
+        newPassword:
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        organization:
+        oldPassword:
           type: string
       required:
-      - email
-      - firstName
-      - lastName
-      - organization
-      type: object
-    User:
-      properties:
-        createdTime:
-          format: date-time
-          type: string
-        id:
-          type: integer
-        idpId:
-          type: string
-        profile:
-          $ref: '#/components/schemas/UserProfile'
-      required:
-      - id
-      - idpId
-      - createdTime
-      type: object
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
+      - oldPassword
+      - newPassword
       type: object
   securitySchemes:
     JWTBearer:

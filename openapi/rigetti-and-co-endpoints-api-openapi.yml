@@ -250,44 +250,6 @@ paths:
       - Endpoints
 components:
   schemas:
-    RestartEndpointRequest:
-      properties:
-        componentName:
-          description: Individual component to restart
-          title: Component Name
-          type: string
-      title: RestartEndpointRequest
-      type: object
-    NomadJobDatacenters:
-      description: An enumeration.
-      enum:
-      - berkeley-775
-      - fremont-fab
-      - rigetti-gb-1
-      title: NomadJobDatacenters
-      type: string
-    Error:
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        requestId:
-          title: Request ID
-          type: string
-        validationErrors:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Validation Errors
-          type: array
-      required:
-      - code
-      - message
-      - requestId
-      title: Error
-      type: object
     Endpoint:
       description: An Endpoint is the entry point for remote access to a QuantumProcessor.
       properties:
@@ -331,49 +293,6 @@ components:
       - mock
       title: Endpoint
       type: object
-    CreateEndpointParameters:
-      description: A publicly available set of parameters for defining an endpoint.
-      properties:
-        datacenters:
-          description: Which datacenters are available for endpoint placement. Defaults to berkeley-775
-          items:
-            $ref: '#/components/schemas/NomadJobDatacenters'
-          title: Datacenters
-          type: array
-        quantumProcessorIds:
-          description: Public identifiers for quantum processors served by this endpoint.
-          items:
-            type: string
-          title: Quantum Processor IDs
-          type: array
-      title: CreateEndpointParameters
-      type: object
-    EndpointAddresses:
-      description: Addresses at which an endpoint is reachable over the network.
-      properties:
-        grpc:
-          title: Grpc
-          type: string
-        rpcq:
-          title: Rpcq
-          type: string
-      title: EndpointAddresses
-      type: object
-    ListEndpointsResponse:
-      properties:
-        endpoints:
-          items:
-            $ref: '#/components/schemas/Endpoint'
-          title: Endpoints
-          type: array
-        nextPageToken:
-          description: Opaque token indicating the start of the next page of results to return; do not decode
-          title: Next Page Token
-          type: string
-      required:
-      - endpoints
-      title: ListEndpointsResponse
-      type: object
     ValidationError:
       properties:
         in:
@@ -395,6 +314,87 @@ components:
       - in
       - message
       title: ValidationError
+      type: object
+    RestartEndpointRequest:
+      properties:
+        componentName:
+          description: Individual component to restart
+          title: Component Name
+          type: string
+      title: RestartEndpointRequest
+      type: object
+    ListEndpointsResponse:
+      properties:
+        endpoints:
+          items:
+            $ref: '#/components/schemas/Endpoint'
+          title: Endpoints
+          type: array
+        nextPageToken:
+          description: Opaque token indicating the start of the next page of results to return; do not decode
+          title: Next Page Token
+          type: string
+      required:
+      - endpoints
+      title: ListEndpointsResponse
+      type: object
+    EndpointAddresses:
+      description: Addresses at which an endpoint is reachable over the network.
+      properties:
+        grpc:
+          title: Grpc
+          type: string
+        rpcq:
+          title: Rpcq
+          type: string
+      title: EndpointAddresses
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    NomadJobDatacenters:
+      description: An enumeration.
+      enum:
+      - berkeley-775
+      - fremont-fab
+      - rigetti-gb-1
+      title: NomadJobDatacenters
+      type: string
+    CreateEndpointParameters:
+      description: A publicly available set of parameters for defining an endpoint.
+      properties:
+        datacenters:
+          description: Which datacenters are available for endpoint placement. Defaults to berkeley-775
+          items:
+            $ref: '#/components/schemas/NomadJobDatacenters'
+          title: Datacenters
+          type: array
+        quantumProcessorIds:
+          description: Public identifiers for quantum processors served by this endpoint.
+          items:
+            type: string
+          title: Quantum Processor IDs
+          type: array
+      title: CreateEndpointParameters
       type: object
   securitySchemes:
     JWTBearer:
