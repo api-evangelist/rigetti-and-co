@@ -93,6 +93,18 @@ paths:
       - clientApplications
 components:
   schemas:
+    CheckClientApplicationRequest:
+      properties:
+        name:
+          description: Name of component
+          type: string
+        version:
+          description: Semantic version of component.
+          type: string
+      required:
+      - name
+      - version
+      type: object
     ClientApplication:
       properties:
         detailsUri:
@@ -138,15 +150,6 @@ components:
       - message
       title: ValidationError
       type: object
-    ListClientApplicationsResponse:
-      properties:
-        clientApplications:
-          items:
-            $ref: '#/components/schemas/ClientApplication'
-          type: array
-      required:
-      - clientApplications
-      type: object
     CheckClientApplicationResponse:
       properties:
         isLatestVersion:
@@ -160,6 +163,18 @@ components:
       - isLatestVersion
       - isUpdateRequired
       - message
+      type: object
+    ChecksumDescription:
+      properties:
+        headerName:
+          type: string
+        type:
+          enum:
+          - md5
+          type: string
+      required:
+      - headerName
+      - type
       type: object
     Error:
       properties:
@@ -183,6 +198,15 @@ components:
       - requestId
       title: Error
       type: object
+    ListClientApplicationsResponse:
+      properties:
+        clientApplications:
+          items:
+            $ref: '#/components/schemas/ClientApplication'
+          type: array
+      required:
+      - clientApplications
+      type: object
     ClientApplicationsDownloadLink:
       properties:
         checksumDescription:
@@ -193,30 +217,6 @@ components:
           type: string
       required:
       - url
-      type: object
-    CheckClientApplicationRequest:
-      properties:
-        name:
-          description: Name of component
-          type: string
-        version:
-          description: Semantic version of component.
-          type: string
-      required:
-      - name
-      - version
-      type: object
-    ChecksumDescription:
-      properties:
-        headerName:
-          type: string
-        type:
-          enum:
-          - md5
-          type: string
-      required:
-      - headerName
-      - type
       type: object
   securitySchemes:
     JWTBearer:

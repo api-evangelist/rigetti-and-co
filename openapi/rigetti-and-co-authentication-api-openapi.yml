@@ -145,6 +145,16 @@ components:
       - lastName
       - organization
       type: object
+    AuthResetPasswordRequest:
+      properties:
+        newPassword:
+          type: string
+        oldPassword:
+          type: string
+      required:
+      - oldPassword
+      - newPassword
+      type: object
     ValidationError:
       properties:
         in:
@@ -166,24 +176,6 @@ components:
       - in
       - message
       title: ValidationError
-      type: object
-    AuthResetPasswordWithTokenRequest:
-      description: Token may be requested with AuthEmailPasswordResetToken.
-      properties:
-        newPassword:
-          type: string
-        token:
-          type: string
-      required:
-      - token
-      - newPassword
-      type: object
-    AuthEmailPasswordResetTokenRequest:
-      properties:
-        email:
-          type: string
-      required:
-      - email
       type: object
     User:
       properties:
@@ -223,14 +215,22 @@ components:
       - requestId
       title: Error
       type: object
-    AuthResetPasswordRequest:
+    AuthEmailPasswordResetTokenRequest:
+      properties:
+        email:
+          type: string
+      required:
+      - email
+      type: object
+    AuthResetPasswordWithTokenRequest:
+      description: Token may be requested with AuthEmailPasswordResetToken.
       properties:
         newPassword:
           type: string
-        oldPassword:
+        token:
           type: string
       required:
-      - oldPassword
+      - token
       - newPassword
       type: object
   securitySchemes:
