@@ -129,6 +129,35 @@ paths:
       - Authentication
 components:
   schemas:
+    AuthEmailPasswordResetTokenRequest:
+      properties:
+        email:
+          type: string
+      required:
+      - email
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
     UserProfile:
       properties:
         email:
@@ -155,44 +184,6 @@ components:
       - oldPassword
       - newPassword
       type: object
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    User:
-      properties:
-        createdTime:
-          format: date-time
-          type: string
-        id:
-          type: integer
-        idpId:
-          type: string
-        profile:
-          $ref: '#/components/schemas/UserProfile'
-      required:
-      - id
-      - idpId
-      - createdTime
-      type: object
     Error:
       properties:
         code:
@@ -215,12 +206,21 @@ components:
       - requestId
       title: Error
       type: object
-    AuthEmailPasswordResetTokenRequest:
+    User:
       properties:
-        email:
+        createdTime:
+          format: date-time
           type: string
+        id:
+          type: integer
+        idpId:
+          type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
       required:
-      - email
+      - id
+      - idpId
+      - createdTime
       type: object
     AuthResetPasswordWithTokenRequest:
       description: Token may be requested with AuthEmailPasswordResetToken.

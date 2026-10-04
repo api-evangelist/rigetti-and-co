@@ -238,74 +238,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuantumProcessorAccessor'
-    Architecture:
-      type: object
-      title: Architecture
-      description: 'Represents the logical underlying architecture of a quantum processor.
-
-
-        The architecture is defined in detail by the nodes and edges that constitute the quantum
-
-        processor. This defines the set of all nodes that could be operated upon, and indicates to
-
-        some approximation their physical layout. The main purpose of this is to support geometry
-
-        calculations that are independent of the available operations, and rendering ISA-based
-
-        information. Architecture layouts are defined by the `family`, as follows.
-
-
-        The "Aspen" family of quantum processor indicates a 2D planar grid layout of octagon unit
-
-        cells. The `node_id` in this architecture is computed as `100 p_y + 10 p_x + p_u` where
-
-        `p_y` is the zero-based Y position in the unit cell grid, `p_x` is the zero-based
-
-        X position in the unit cell grid, and `p_u` is the zero-based position in the octagon
-
-        unit cell and always ranges from 0 to 7. This scheme has a natural size limit of a 10x10
-
-        unit cell grid, which permits the architecture to scale up to 800 nodes.
-
-
-        Note that the operations that are actually available are defined entirely by `Operation`
-
-        instances. The presence of a node or edge in the `Architecture` model provides no guarantee
-
-        that any 1Q or 2Q operation will be available to users writing QUIL programs.'
-      required:
-      - family
-      - nodes
-      - edges
-      properties:
-        family:
-          description: The architecture family. The nodes and edges conform to this family.
-          allOf:
-          - $ref: '#/components/schemas/Family'
-          - description: The architecture family. The nodes and edges conform to this family.
-        nodes:
-          type: array
-          description: A list of all computational nodes in the instruction set architecture.
-          items:
-            $ref: '#/components/schemas/Node'
-          uniqueItems: true
-        edges:
-          type: array
-          description: A list of all computational edges in the instruction set architecture.
-          items:
-            $ref: '#/components/schemas/Edge'
-          uniqueItems: true
-    Parameter:
-      type: object
-      title: Parameter
-      description: A parameter to an operation.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          title: The format of a name (an identifier).
-          description: The name of the parameter, such as the name of a mathematical symbol.
     Characteristic:
       type: object
       title: Characteristic
@@ -356,54 +288,6 @@ components:
           items:
             type: number
             format: double
-    QuantumProcessorAccessor:
-      type: object
-      title: QuantumProcessorAccessor
-      description: An accessor for a controller deployment.
-      required:
-      - accessType
-      - live
-      - url
-      properties:
-        accessType:
-          description: The type of access to the controller.
-          allOf:
-          - $ref: '#/components/schemas/QuantumProcessorAccessorType'
-          - description: The type of access to the controller.
-        live:
-          type: boolean
-          description: Whether this connection is attached to live hardware.
-        id:
-          type: string
-          description: 'The unique ID of this accessor.
-
-
-            This is set only for client-created (v1) accessors.
-
-            Automatically-available accessors, including direct accessors and
-
-            discovered kubernetes Controller Gateway instances, have no ID.'
-          deprecated: true
-        url:
-          type: string
-          description: The gRPC endpoint for this accessor.
-        rank:
-          type: integer
-          format: int64
-          description: '(Deprecated) Rank of this accessor against others for the same QPU. If two accessors both serve a client''s
-
-            purposes, that with the lower rank value should be used for access.'
-          deprecated: true
-    QuantumProcessor:
-      type: object
-      title: QuantumProcessor
-      description: An object representing a quantum processor.
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: 'Immutable, unique identifier for a quantum processor [example: Aspen-1]'
     ValidationError:
       properties:
         in:
@@ -460,109 +344,6 @@ components:
           description: The list of site-independent characteristics of this operation.
           items:
             $ref: '#/components/schemas/Characteristic'
-    Family:
-      type: string
-      description: 'Family identifier.
-
-
-        Value ''None'' implies the architecture has no specific layout topology.
-
-        Value ''Full'' implies that each node is connected to every other (a fully-connected architecture)
-
-
-        For other values based on deployed architecture layouts (e.g. `Aspen` and `Ankaa`), refer to
-
-        the architecture classes themselves for more details.'
-      enum:
-      - None
-      - Full
-      - Aspen
-      - Ankaa
-    QuantumProcessorAccessorType:
-      type: string
-      description: Type of the accessor. Each accessor type is a different mechanism of accessing a QPU, each with their own benefits and/or drawbacks.
-      enum:
-      - gateway.v1
-      - direct.v1
-    Error:
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        requestId:
-          title: Request ID
-          type: string
-        validationErrors:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Validation Errors
-          type: array
-      required:
-      - code
-      - message
-      - requestId
-      title: Error
-      type: object
-    OperationSite:
-      type: object
-      title: OperationSite
-      description: A site for an operation, with its site-dependent characteristics.
-      required:
-      - node_ids
-      - characteristics
-      properties:
-        node_ids:
-          type: array
-          description: 'The list of architecture node ids for the site. The order of these node ids
-
-            obey the definition of node symmetry from the enclosing operation.'
-          items:
-            type: integer
-            format: uint64
-            title: A node integer identifier; must be greater than or equal to zero.
-          minItems: 1
-          uniqueItems: true
-        characteristics:
-          type: array
-          description: The list of site-dependent characteristics of this operation.
-          items:
-            $ref: '#/components/schemas/Characteristic'
-    Node:
-      type: object
-      title: Node
-      description: 'A logical node in the quantum processor''s architecture.
-
-
-        The existence of a node in the ISA `Architecture` does not necessarily mean that a given 1Q
-
-        operation will be available on the node. This information is conveyed by the presence of the
-
-        specific `node_id` in instances of `Instruction`.'
-      required:
-      - node_id
-      properties:
-        node_id:
-          type: integer
-          format: uint64
-          title: A node integer identifier; must be greater than or equal to zero.
-          description: 'An integer id assigned to the computational node. The ids may not be contiguous and will be assigned based
-
-            on the architecture family.'
-    ListQuantumProcessorsResponse:
-      type: object
-      required:
-      - quantumProcessors
-      properties:
-        nextPageToken:
-          type: string
-          description: Send an opaque page token returned from a prior request
-        quantumProcessors:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuantumProcessor'
     InstructionSetArchitecture:
       type: object
       title: InstructionSetArchitecture
@@ -631,6 +412,63 @@ components:
             title: A node integer identifier; must be greater than or equal to zero.
           maxItems: 2
           minItems: 2
+    Architecture:
+      type: object
+      title: Architecture
+      description: 'Represents the logical underlying architecture of a quantum processor.
+
+
+        The architecture is defined in detail by the nodes and edges that constitute the quantum
+
+        processor. This defines the set of all nodes that could be operated upon, and indicates to
+
+        some approximation their physical layout. The main purpose of this is to support geometry
+
+        calculations that are independent of the available operations, and rendering ISA-based
+
+        information. Architecture layouts are defined by the `family`, as follows.
+
+
+        The "Aspen" family of quantum processor indicates a 2D planar grid layout of octagon unit
+
+        cells. The `node_id` in this architecture is computed as `100 p_y + 10 p_x + p_u` where
+
+        `p_y` is the zero-based Y position in the unit cell grid, `p_x` is the zero-based
+
+        X position in the unit cell grid, and `p_u` is the zero-based position in the octagon
+
+        unit cell and always ranges from 0 to 7. This scheme has a natural size limit of a 10x10
+
+        unit cell grid, which permits the architecture to scale up to 800 nodes.
+
+
+        Note that the operations that are actually available are defined entirely by `Operation`
+
+        instances. The presence of a node or edge in the `Architecture` model provides no guarantee
+
+        that any 1Q or 2Q operation will be available to users writing QUIL programs.'
+      required:
+      - family
+      - nodes
+      - edges
+      properties:
+        family:
+          description: The architecture family. The nodes and edges conform to this family.
+          allOf:
+          - $ref: '#/components/schemas/Family'
+          - description: The architecture family. The nodes and edges conform to this family.
+        nodes:
+          type: array
+          description: A list of all computational nodes in the instruction set architecture.
+          items:
+            $ref: '#/components/schemas/Node'
+          uniqueItems: true
+        edges:
+          type: array
+          description: A list of all computational edges in the instruction set architecture.
+          items:
+            $ref: '#/components/schemas/Edge'
+          uniqueItems: true
     ListInstructionSetArchitectureResponse:
       type: object
       required:
@@ -643,6 +481,168 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstructionSetArchitecture'
+    Family:
+      type: string
+      description: 'Family identifier.
+
+
+        Value ''None'' implies the architecture has no specific layout topology.
+
+        Value ''Full'' implies that each node is connected to every other (a fully-connected architecture)
+
+
+        For other values based on deployed architecture layouts (e.g. `Aspen` and `Ankaa`), refer to
+
+        the architecture classes themselves for more details.'
+      enum:
+      - None
+      - Full
+      - Aspen
+      - Ankaa
+    Node:
+      type: object
+      title: Node
+      description: 'A logical node in the quantum processor''s architecture.
+
+
+        The existence of a node in the ISA `Architecture` does not necessarily mean that a given 1Q
+
+        operation will be available on the node. This information is conveyed by the presence of the
+
+        specific `node_id` in instances of `Instruction`.'
+      required:
+      - node_id
+      properties:
+        node_id:
+          type: integer
+          format: uint64
+          title: A node integer identifier; must be greater than or equal to zero.
+          description: 'An integer id assigned to the computational node. The ids may not be contiguous and will be assigned based
+
+            on the architecture family.'
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    Parameter:
+      type: object
+      title: Parameter
+      description: A parameter to an operation.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          title: The format of a name (an identifier).
+          description: The name of the parameter, such as the name of a mathematical symbol.
+    OperationSite:
+      type: object
+      title: OperationSite
+      description: A site for an operation, with its site-dependent characteristics.
+      required:
+      - node_ids
+      - characteristics
+      properties:
+        node_ids:
+          type: array
+          description: 'The list of architecture node ids for the site. The order of these node ids
+
+            obey the definition of node symmetry from the enclosing operation.'
+          items:
+            type: integer
+            format: uint64
+            title: A node integer identifier; must be greater than or equal to zero.
+          minItems: 1
+          uniqueItems: true
+        characteristics:
+          type: array
+          description: The list of site-dependent characteristics of this operation.
+          items:
+            $ref: '#/components/schemas/Characteristic'
+    QuantumProcessorAccessor:
+      type: object
+      title: QuantumProcessorAccessor
+      description: An accessor for a controller deployment.
+      required:
+      - accessType
+      - live
+      - url
+      properties:
+        accessType:
+          description: The type of access to the controller.
+          allOf:
+          - $ref: '#/components/schemas/QuantumProcessorAccessorType'
+          - description: The type of access to the controller.
+        live:
+          type: boolean
+          description: Whether this connection is attached to live hardware.
+        id:
+          type: string
+          description: 'The unique ID of this accessor.
+
+
+            This is set only for client-created (v1) accessors.
+
+            Automatically-available accessors, including direct accessors and
+
+            discovered kubernetes Controller Gateway instances, have no ID.'
+          deprecated: true
+        url:
+          type: string
+          description: The gRPC endpoint for this accessor.
+        rank:
+          type: integer
+          format: int64
+          description: '(Deprecated) Rank of this accessor against others for the same QPU. If two accessors both serve a client''s
+
+            purposes, that with the lower rank value should be used for access.'
+          deprecated: true
+    QuantumProcessorAccessorType:
+      type: string
+      description: Type of the accessor. Each accessor type is a different mechanism of accessing a QPU, each with their own benefits and/or drawbacks.
+      enum:
+      - gateway.v1
+      - direct.v1
+    QuantumProcessor:
+      type: object
+      title: QuantumProcessor
+      description: An object representing a quantum processor.
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: 'Immutable, unique identifier for a quantum processor [example: Aspen-1]'
+    ListQuantumProcessorsResponse:
+      type: object
+      required:
+      - quantumProcessors
+      properties:
+        nextPageToken:
+          type: string
+          description: Send an opaque page token returned from a prior request
+        quantumProcessors:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuantumProcessor'
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

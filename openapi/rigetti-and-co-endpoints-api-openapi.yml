@@ -250,14 +250,39 @@ paths:
       - Endpoints
 components:
   schemas:
-    NomadJobDatacenters:
-      description: An enumeration.
-      enum:
-      - berkeley-775
-      - fremont-fab
-      - rigetti-gb-1
-      title: NomadJobDatacenters
-      type: string
+    EndpointAddresses:
+      description: Addresses at which an endpoint is reachable over the network.
+      properties:
+        grpc:
+          title: Grpc
+          type: string
+        rpcq:
+          title: Rpcq
+          type: string
+      title: EndpointAddresses
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
     RestartEndpointRequest:
       properties:
         componentName:
@@ -266,6 +291,29 @@ components:
           type: string
       title: RestartEndpointRequest
       type: object
+    ListEndpointsResponse:
+      properties:
+        endpoints:
+          items:
+            $ref: '#/components/schemas/Endpoint'
+          title: Endpoints
+          type: array
+        nextPageToken:
+          description: Opaque token indicating the start of the next page of results to return; do not decode
+          title: Next Page Token
+          type: string
+      required:
+      - endpoints
+      title: ListEndpointsResponse
+      type: object
+    NomadJobDatacenters:
+      description: An enumeration.
+      enum:
+      - berkeley-775
+      - fremont-fab
+      - rigetti-gb-1
+      title: NomadJobDatacenters
+      type: string
     Endpoint:
       description: An Endpoint is the entry point for remote access to a QuantumProcessor.
       properties:
@@ -309,39 +357,6 @@ components:
       - mock
       title: Endpoint
       type: object
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    EndpointAddresses:
-      description: Addresses at which an endpoint is reachable over the network.
-      properties:
-        grpc:
-          title: Grpc
-          type: string
-        rpcq:
-          title: Rpcq
-          type: string
-      title: EndpointAddresses
-      type: object
     Error:
       properties:
         code:
@@ -380,21 +395,6 @@ components:
           title: Quantum Processor IDs
           type: array
       title: CreateEndpointParameters
-      type: object
-    ListEndpointsResponse:
-      properties:
-        endpoints:
-          items:
-            $ref: '#/components/schemas/Endpoint'
-          title: Endpoints
-          type: array
-        nextPageToken:
-          description: Opaque token indicating the start of the next page of results to return; do not decode
-          title: Next Page Token
-          type: string
-      required:
-      - endpoints
-      title: ListEndpointsResponse
       type: object
   securitySchemes:
     JWTBearer:

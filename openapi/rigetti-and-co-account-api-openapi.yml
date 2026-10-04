@@ -847,42 +847,203 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ListAccountBillingInvoicesResponse:
+    Group:
       properties:
-        billingInvoices:
-          items:
-            $ref: '#/components/schemas/BillingInvoice'
-          type: array
-        nextPageToken:
+        createdTime:
+          format: date-time
           type: string
-      required:
-      - billingInvoices
-      type: object
-    EventBillingPriceRate:
-      description: 'The per-unit price associated with a particular QCS service product,
-
-        and (optionally) with a particular quantum processor.
-
-        '
-      properties:
+        description:
+          type: string
         id:
-          type: integer
-        product:
-          $ref: '#/components/schemas/Product'
-        quantumProcessorId:
-          description: If unset, this per-unit price applies to any quantum processor.
           type: string
-        unitAmountDecimal:
-          description: The unit amount in currency to be charged.
-          format: double
-          type: number
-        unitLabel:
-          description: Human-readable unit label infomation.
+        lastMembershipUpdatedTime:
+          format: date-time
+          type: string
+        name:
+          type: string
+        updatedTime:
+          format: date-time
           type: string
       required:
       - id
+      - name
+      - description
+      - createdTime
+      - updatedTime
+      - lastMembershipUpdatedTime
+      type: object
+    ValidationError:
+      properties:
+        in:
+          enum:
+          - header
+          - query
+          - path
+          - body
+          type: string
+        message:
+          title: Message
+          type: string
+        path:
+          items:
+            type: string
+          title: Path
+          type: array
+      required:
+      - in
+      - message
+      title: ValidationError
+      type: object
+    ListGroupUsersResponse:
+      properties:
+        nextPageToken:
+          type: string
+        users:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+      required:
+      - users
+      type: object
+    Announcement:
+      description: An announcement to be displayed to users.
+      properties:
+        id:
+          type: integer
+        contentHtml:
+          description: The HTML content of the announcement to be displayed.
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: The RFC3339-format time the announcement was created.
+        active:
+          type: boolean
+          description: Whether the announcement is currently active.
+      required:
+      - id
+      - contentHtml
+      - createdAt
+      - active
+    BillingProduct:
+      description: 'A QCS service product, such as reservation time or on-demand execution.
+
+        One product can be associated with multiple prices, which may be associated
+
+        to particular resources or customers.
+
+        '
+      properties:
+        description:
+          maxLength: 5000
+          type: string
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        name:
+          description: This name will show up on associated invoice line item descriptions.
+          maxLength: 5000
+          type: string
+        object:
+          description: This object's type, which is always `product`.
+          enum:
+          - product
+          type: string
+          x-enum-varnames:
+          - productObject
+        unitLabel:
+          description: 'A label for units of this product which appears on customer
+
+            invoices, e.g. "microseconds" for on-demand execution or "minutes" for
+
+            qpu reservations.
+
+            '
+          maxLength: 5000
+          type: string
+      required:
+      - id
+      - name
+      - object
+      title: Billing Product
+      type: object
+    BillingCustomer:
+      description: Billing account information of a particular QCS account.
+      properties:
+        email:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - email
+      title: Billing Customer
+      type: object
+    Product:
+      description: The set of known QCS service products.
+      enum:
+      - reservationCreation
+      - qpuJobCompletion
+      - qpuJobTime
+      type: string
+    BillingInvoice:
+      allOf:
+      - $ref: '#/components/schemas/BillingUpcomingInvoice'
+      - description: A finalized invoice for the current invoice period.
+        properties:
+          id:
+            type: string
+        required:
+        - id
+        - periodEnd
+        - periodStart
+        - startingBalance
+        - status
+        - subtotal
+        - tax
+        - total
+        type: object
+      description: A finalized billing invoice.
+      type: object
+    UserProfile:
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - email
+      - firstName
+      - lastName
+      - organization
+      type: object
+    GetAccountEventBillingPriceRequest:
+      description: Property `quantumProcessorId` is currently required for all `product`s, however in the future there may be `product`s that do not require a `quantumProcessorId`.
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        quantumProcessorId:
+          maxLength: 1000
+          type: string
+      required:
       - product
       type: object
+    AnnouncementsResponse:
+      description: A page of announcements.
+      properties:
+        nextPageToken:
+          type: string
+        announcements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+      required:
+      - announcements
     BillingPriceRecurrence:
       description: 'How to invoice for the usage of a product that has a recurring
 
@@ -942,161 +1103,6 @@ components:
       - interval
       title: Billing Price Recurrence
       type: object
-    BillingInvoice:
-      allOf:
-      - $ref: '#/components/schemas/BillingUpcomingInvoice'
-      - description: A finalized invoice for the current invoice period.
-        properties:
-          id:
-            type: string
-        required:
-        - id
-        - periodEnd
-        - periodStart
-        - startingBalance
-        - status
-        - subtotal
-        - tax
-        - total
-        type: object
-      description: A finalized billing invoice.
-      type: object
-    BillingPriceTiersMode:
-      description: 'Use `graduated` to apply each tier calculation to the portion
-
-        of relevant quantity, e.g. how US federal tax brackets work.
-
-        Use `volume` to apply the highest relevant tier to the entire quantity.
-
-        '
-      enum:
-      - graduated
-      - volume
-      type: string
-    RemoveGroupUserRequest:
-      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
-      properties:
-        groupId:
-          type: string
-        groupName:
-          type: string
-        userEmail:
-          type: string
-        userId:
-          type: string
-      type: object
-    GetAccountEventBillingPriceRequest:
-      description: Property `quantumProcessorId` is currently required for all `product`s, however in the future there may be `product`s that do not require a `quantumProcessorId`.
-      properties:
-        product:
-          $ref: '#/components/schemas/Product'
-        quantumProcessorId:
-          maxLength: 1000
-          type: string
-      required:
-      - product
-      type: object
-    Group:
-      properties:
-        createdTime:
-          format: date-time
-          type: string
-        description:
-          type: string
-        id:
-          type: string
-        lastMembershipUpdatedTime:
-          format: date-time
-          type: string
-        name:
-          type: string
-        updatedTime:
-          format: date-time
-          type: string
-      required:
-      - id
-      - name
-      - description
-      - createdTime
-      - updatedTime
-      - lastMembershipUpdatedTime
-      type: object
-    ListGroupUsersResponse:
-      properties:
-        nextPageToken:
-          type: string
-        users:
-          items:
-            $ref: '#/components/schemas/User'
-          type: array
-      required:
-      - users
-      type: object
-    UpdateViewerUserProfileRequest:
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        organization:
-          type: string
-      required:
-      - firstName
-      - lastName
-      - organization
-      type: object
-    AddGroupUserRequest:
-      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
-      properties:
-        groupId:
-          type: string
-        groupName:
-          type: string
-        userEmail:
-          type: string
-        userId:
-          type: string
-      type: object
-    BillingInvoiceStatus:
-      enum:
-      - draft
-      - open
-      - paid
-      - uncollectible
-      - void
-      type: string
-    UserCredentials:
-      properties:
-        password:
-          properties:
-            value:
-              type: string
-          required:
-          - value
-          type: object
-      required:
-      - password
-      type: object
-    Announcement:
-      description: An announcement to be displayed to users.
-      properties:
-        id:
-          type: integer
-        contentHtml:
-          description: The HTML content of the announcement to be displayed.
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-          description: The RFC3339-format time the announcement was created.
-        active:
-          type: boolean
-          description: Whether the announcement is currently active.
-      required:
-      - id
-      - contentHtml
-      - createdAt
-      - active
     User:
       properties:
         createdTime:
@@ -1112,17 +1118,6 @@ components:
       - id
       - idpId
       - createdTime
-      type: object
-    ListAccountBillingInvoiceLinesResponse:
-      properties:
-        billingInvoiceLines:
-          items:
-            $ref: '#/components/schemas/BillingInvoiceLine'
-          type: array
-        nextPageToken:
-          type: string
-      required:
-      - billingInvoiceLines
       type: object
     BillingUpcomingInvoice:
       description: An unfinalized billing invoice.
@@ -1152,17 +1147,6 @@ components:
       - tax
       - total
       type: object
-    ListGroupsResponse:
-      properties:
-        groups:
-          items:
-            $ref: '#/components/schemas/Group'
-          type: array
-        nextPageToken:
-          type: string
-      required:
-      - groups
-      type: object
     AccountBalance:
       description: Balance of QCS account in billing system. Note, a negative balance signifies that the account has QCS credits to spend. A positive account balance signifies that the account has no additional QCS credits to spend. The QCS UI may display these quantities in absolute or negative value and provide a clear meaning to the significance.
       properties:
@@ -1171,248 +1155,6 @@ components:
           type: integer
       required:
       - balance
-      type: object
-    BillingPriceTier:
-      description: 'Use `flatAmount` to charge a fixed amount for the quantity relevant
-
-        to the tier.
-
-        Use `unitAmount` to charge a linear rate for the quantity relevant to the
-
-        tier.
-
-        Only one field between `flatAmount`, `flatAmountDecimal`, `unitAmount`, or
-
-        `unitAmountDecimal` should be set.
-
-        '
-      properties:
-        flatAmount:
-          format: int64
-          type: integer
-        flatAmountDecimal:
-          format: double
-          type: number
-        unitAmount:
-          format: int64
-          type: integer
-        unitAmountDecimal:
-          format: double
-          type: number
-        upTo:
-          description: 'The upper bound of product quantity relevant to this tier.
-
-            The highest tier should be open ended, represented by an `upTo` value
-
-            of `-1`.
-
-            '
-          format: int64
-          type: integer
-      required:
-      - upTo
-      title: tier
-      type: object
-    ViewerUserOnboardingCompleted:
-      properties:
-        onboardingCompleted:
-          type: boolean
-      required:
-      - onboardingCompleted
-    BillingProduct:
-      description: 'A QCS service product, such as reservation time or on-demand execution.
-
-        One product can be associated with multiple prices, which may be associated
-
-        to particular resources or customers.
-
-        '
-      properties:
-        description:
-          maxLength: 5000
-          type: string
-        id:
-          description: Unique identifier for the object.
-          maxLength: 5000
-          type: string
-        name:
-          description: This name will show up on associated invoice line item descriptions.
-          maxLength: 5000
-          type: string
-        object:
-          description: This object's type, which is always `product`.
-          enum:
-          - product
-          type: string
-          x-enum-varnames:
-          - productObject
-        unitLabel:
-          description: 'A label for units of this product which appears on customer
-
-            invoices, e.g. "microseconds" for on-demand execution or "minutes" for
-
-            qpu reservations.
-
-            '
-          maxLength: 5000
-          type: string
-      required:
-      - id
-      - name
-      - object
-      title: Billing Product
-      type: object
-    AnnouncementsResponse:
-      description: A page of announcements.
-      properties:
-        nextPageToken:
-          type: string
-        announcements:
-          type: array
-          items:
-            $ref: '#/components/schemas/Announcement'
-      required:
-      - announcements
-    BillingPriceScheme:
-      description: 'Use `per_unit` to charge a linear rate per quantity (recommended).
-
-        Use `tiered` to charge a dynamic rate based on quantity as defined in the
-
-        `tiers` of a `BillingPice`.
-
-        '
-      enum:
-      - per_unit
-      - tiered
-      type: string
-    ActivateUserRequest:
-      properties:
-        credentials:
-          $ref: '#/components/schemas/UserCredentials'
-        profile:
-          $ref: '#/components/schemas/UserProfile'
-        token:
-          description: Verification token provided in invitation email.
-          type: string
-      required:
-      - profile
-      - credentials
-      - token
-      type: object
-    UserProfile:
-      properties:
-        email:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        organization:
-          type: string
-      required:
-      - email
-      - firstName
-      - lastName
-      - organization
-      type: object
-    BillingInvoiceLine:
-      description: A line item on an invoice representing a particular purchase (such as a reservation) or aggregate usage for the invoice period.
-      properties:
-        amount:
-          type: integer
-        description:
-          type: string
-        id:
-          type: string
-        invoiceItem:
-          type: string
-        lineItemType:
-          enum:
-          - invoiceitem
-          - subscription
-          type: string
-        metadata:
-          additionalProperties:
-            type: string
-          type: object
-        price:
-          $ref: '#/components/schemas/BillingPrice'
-        quantity:
-          type: integer
-        subscription:
-          type: string
-        subscriptionItem:
-          type: string
-      required:
-      - id
-      - description
-      - amount
-      - quantity
-      - lineItemType
-      - metadata
-      type: object
-    ValidationError:
-      properties:
-        in:
-          enum:
-          - header
-          - query
-          - path
-          - body
-          type: string
-        message:
-          title: Message
-          type: string
-        path:
-          items:
-            type: string
-          title: Path
-          type: array
-      required:
-      - in
-      - message
-      title: ValidationError
-      type: object
-    Product:
-      description: The set of known QCS service products.
-      enum:
-      - reservationCreation
-      - qpuJobCompletion
-      - qpuJobTime
-      type: string
-    Error:
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        requestId:
-          title: Request ID
-          type: string
-        validationErrors:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          title: Validation Errors
-          type: array
-      required:
-      - code
-      - message
-      - requestId
-      title: Error
-      type: object
-    BillingCustomer:
-      description: Billing account information of a particular QCS account.
-      properties:
-        email:
-          type: string
-        id:
-          type: string
-      required:
-      - id
-      - email
-      title: Billing Customer
       type: object
     BillingPrice:
       description: 'A configuration for calculating the cost of `BillingProduct` usage
@@ -1480,7 +1222,271 @@ components:
       - id
       title: Billing Price
       type: object
+    ViewerUserOnboardingCompleted:
+      properties:
+        onboardingCompleted:
+          type: boolean
+      required:
+      - onboardingCompleted
+    ActivateUserRequest:
+      properties:
+        credentials:
+          $ref: '#/components/schemas/UserCredentials'
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+        token:
+          description: Verification token provided in invitation email.
+          type: string
+      required:
+      - profile
+      - credentials
+      - token
+      type: object
+    BillingPriceTiersMode:
+      description: 'Use `graduated` to apply each tier calculation to the portion
+
+        of relevant quantity, e.g. how US federal tax brackets work.
+
+        Use `volume` to apply the highest relevant tier to the entire quantity.
+
+        '
+      enum:
+      - graduated
+      - volume
+      type: string
+    RemoveGroupUserRequest:
+      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
+      properties:
+        groupId:
+          type: string
+        groupName:
+          type: string
+        userEmail:
+          type: string
+        userId:
+          type: string
+      type: object
+    BillingPriceScheme:
+      description: 'Use `per_unit` to charge a linear rate per quantity (recommended).
+
+        Use `tiered` to charge a dynamic rate based on quantity as defined in the
+
+        `tiers` of a `BillingPice`.
+
+        '
+      enum:
+      - per_unit
+      - tiered
+      type: string
+    UserCredentials:
+      properties:
+        password:
+          properties:
+            value:
+              type: string
+          required:
+          - value
+          type: object
+      required:
+      - password
+      type: object
+    BillingPriceTier:
+      description: 'Use `flatAmount` to charge a fixed amount for the quantity relevant
+
+        to the tier.
+
+        Use `unitAmount` to charge a linear rate for the quantity relevant to the
+
+        tier.
+
+        Only one field between `flatAmount`, `flatAmountDecimal`, `unitAmount`, or
+
+        `unitAmountDecimal` should be set.
+
+        '
+      properties:
+        flatAmount:
+          format: int64
+          type: integer
+        flatAmountDecimal:
+          format: double
+          type: number
+        unitAmount:
+          format: int64
+          type: integer
+        unitAmountDecimal:
+          format: double
+          type: number
+        upTo:
+          description: 'The upper bound of product quantity relevant to this tier.
+
+            The highest tier should be open ended, represented by an `upTo` value
+
+            of `-1`.
+
+            '
+          format: int64
+          type: integer
+      required:
+      - upTo
+      title: tier
+      type: object
+    BillingInvoiceLine:
+      description: A line item on an invoice representing a particular purchase (such as a reservation) or aggregate usage for the invoice period.
+      properties:
+        amount:
+          type: integer
+        description:
+          type: string
+        id:
+          type: string
+        invoiceItem:
+          type: string
+        lineItemType:
+          enum:
+          - invoiceitem
+          - subscription
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          type: object
+        price:
+          $ref: '#/components/schemas/BillingPrice'
+        quantity:
+          type: integer
+        subscription:
+          type: string
+        subscriptionItem:
+          type: string
+      required:
+      - id
+      - description
+      - amount
+      - quantity
+      - lineItemType
+      - metadata
+      type: object
+    UpdateViewerUserProfileRequest:
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organization:
+          type: string
+      required:
+      - firstName
+      - lastName
+      - organization
+      type: object
+    ListAccountBillingInvoicesResponse:
+      properties:
+        billingInvoices:
+          items:
+            $ref: '#/components/schemas/BillingInvoice'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - billingInvoices
+      type: object
+    ListAccountBillingInvoiceLinesResponse:
+      properties:
+        billingInvoiceLines:
+          items:
+            $ref: '#/components/schemas/BillingInvoiceLine'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - billingInvoiceLines
+      type: object
+    BillingInvoiceStatus:
+      enum:
+      - draft
+      - open
+      - paid
+      - uncollectible
+      - void
+      type: string
+    ListGroupsResponse:
+      properties:
+        groups:
+          items:
+            $ref: '#/components/schemas/Group'
+          type: array
+        nextPageToken:
+          type: string
+      required:
+      - groups
+      type: object
+    Error:
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        requestId:
+          title: Request ID
+          type: string
+        validationErrors:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Validation Errors
+          type: array
+      required:
+      - code
+      - message
+      - requestId
+      title: Error
+      type: object
+    EventBillingPriceRate:
+      description: 'The per-unit price associated with a particular QCS service product,
+
+        and (optionally) with a particular quantum processor.
+
+        '
+      properties:
+        id:
+          type: integer
+        product:
+          $ref: '#/components/schemas/Product'
+        quantumProcessorId:
+          description: If unset, this per-unit price applies to any quantum processor.
+          type: string
+        unitAmountDecimal:
+          description: The unit amount in currency to be charged.
+          format: double
+          type: number
+        unitLabel:
+          description: Human-readable unit label infomation.
+          type: string
+      required:
+      - id
+      - product
+      type: object
+    AddGroupUserRequest:
+      description: Must provide either `userId` or `userEmail` and `groupId` or `groupName`.
+      properties:
+        groupId:
+          type: string
+        groupName:
+          type: string
+        userEmail:
+          type: string
+        userId:
+          type: string
+      type: object
   parameters:
+    pageSizeParam:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
     pageTokenParam:
       description: An opaque token that can be appended to a request query to retrieve the next page of results. Empty if there are no more results to retrieve.
       in: query
@@ -1488,12 +1494,6 @@ components:
       required: false
       schema:
         type: string
-    pageSizeParam:
-      in: query
-      name: pageSize
-      required: false
-      schema:
-        type: integer
   securitySchemes:
     JWTBearer:
       bearerFormat: JWT

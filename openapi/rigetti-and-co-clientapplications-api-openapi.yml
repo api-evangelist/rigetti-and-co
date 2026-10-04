@@ -105,29 +105,6 @@ components:
       - name
       - version
       type: object
-    ClientApplication:
-      properties:
-        detailsUri:
-          type: string
-        latestVersion:
-          description: Semantic version
-          type: string
-        links:
-          items:
-            $ref: '#/components/schemas/ClientApplicationsDownloadLink'
-          type: array
-        minimumVersion:
-          description: Semantic version
-          type: string
-        name:
-          type: string
-        supported:
-          type: boolean
-      required:
-      - latestVersion
-      - name
-      - supported
-      type: object
     ValidationError:
       properties:
         in:
@@ -150,31 +127,25 @@ components:
       - message
       title: ValidationError
       type: object
-    CheckClientApplicationResponse:
+    ListClientApplicationsResponse:
       properties:
-        isLatestVersion:
-          type: boolean
-        isUpdateRequired:
-          description: Set to true if component is not at latest version.
-          type: boolean
-        message:
-          type: string
+        clientApplications:
+          items:
+            $ref: '#/components/schemas/ClientApplication'
+          type: array
       required:
-      - isLatestVersion
-      - isUpdateRequired
-      - message
+      - clientApplications
       type: object
-    ChecksumDescription:
+    ClientApplicationsDownloadLink:
       properties:
-        headerName:
+        checksumDescription:
+          $ref: '#/components/schemas/ChecksumDescription'
+        platform:
           type: string
-        type:
-          enum:
-          - md5
+        url:
           type: string
       required:
-      - headerName
-      - type
+      - url
       type: object
     Error:
       properties:
@@ -198,25 +169,54 @@ components:
       - requestId
       title: Error
       type: object
-    ListClientApplicationsResponse:
+    CheckClientApplicationResponse:
       properties:
-        clientApplications:
-          items:
-            $ref: '#/components/schemas/ClientApplication'
-          type: array
+        isLatestVersion:
+          type: boolean
+        isUpdateRequired:
+          description: Set to true if component is not at latest version.
+          type: boolean
+        message:
+          type: string
       required:
-      - clientApplications
+      - isLatestVersion
+      - isUpdateRequired
+      - message
       type: object
-    ClientApplicationsDownloadLink:
+    ClientApplication:
       properties:
-        checksumDescription:
-          $ref: '#/components/schemas/ChecksumDescription'
-        platform:
+        detailsUri:
           type: string
-        url:
+        latestVersion:
+          description: Semantic version
+          type: string
+        links:
+          items:
+            $ref: '#/components/schemas/ClientApplicationsDownloadLink'
+          type: array
+        minimumVersion:
+          description: Semantic version
+          type: string
+        name:
+          type: string
+        supported:
+          type: boolean
+      required:
+      - latestVersion
+      - name
+      - supported
+      type: object
+    ChecksumDescription:
+      properties:
+        headerName:
+          type: string
+        type:
+          enum:
+          - md5
           type: string
       required:
-      - url
+      - headerName
+      - type
       type: object
   securitySchemes:
     JWTBearer:

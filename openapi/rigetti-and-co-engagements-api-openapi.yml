@@ -93,6 +93,13 @@ paths:
       - Engagements
 components:
   schemas:
+    AccountType:
+      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
+      default: user
+      enum:
+      - group
+      - user
+      type: string
     ValidationError:
       properties:
         in:
@@ -169,33 +176,6 @@ components:
       - credentials
       title: EngagementWithCredentials
       type: object
-    EngagementCredentials:
-      description: 'Credentials are the ZeroMQ CURVE Keys used to encrypt the connection with the Quantum Processor
-
-        Endpoint.'
-      properties:
-        clientPublic:
-          title: Client Public Key
-          type: string
-        clientSecret:
-          title: Client Secret Key
-          type: string
-        serverPublic:
-          title: Server Public Key
-          type: string
-      required:
-      - clientPublic
-      - clientSecret
-      - serverPublic
-      title: EngagementCredentials
-      type: object
-    AccountType:
-      description: 'There are two types of accounts within QCS: user (representing a single user in Okta) and group (representing one or more users in Okta).'
-      default: user
-      enum:
-      - group
-      - user
-      type: string
     Error:
       properties:
         code:
@@ -244,6 +224,26 @@ components:
           title: Tags
           type: array
       title: CreateEngagementRequest
+      type: object
+    EngagementCredentials:
+      description: 'Credentials are the ZeroMQ CURVE Keys used to encrypt the connection with the Quantum Processor
+
+        Endpoint.'
+      properties:
+        clientPublic:
+          title: Client Public Key
+          type: string
+        clientSecret:
+          title: Client Secret Key
+          type: string
+        serverPublic:
+          title: Server Public Key
+          type: string
+      required:
+      - clientPublic
+      - clientSecret
+      - serverPublic
+      title: EngagementCredentials
       type: object
   securitySchemes:
     JWTBearer:
