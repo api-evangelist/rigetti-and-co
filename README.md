@@ -64,6 +64,134 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Rigetti & Co is a company surfaced as a portfolio company of a16z and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Rigetti Computing (Rigetti & Co) is a full-stack quantum computing company that builds superconducting quantum processors and delivers access to them through Quantum Cloud Services (QCS). The QCS HTTP API is an OpenAPI 3.0.2 REST/RPC interface (aligned with Google API Improvement Proposals) for discovering quantum processors and their instruction set architectures, reserving execution time, opening execution engagements against endpoints, and managing accounts and billing. Quantum programs are built and run with the pyQuil and qcs-sdk Python/Rust SDKs, while low-latency job execution, readout, and translation run over a companion gRPC surface. Authentication is OAuth2 (Okta) bearer JWT. Surfaced as an a16z portfolio company and enriched by the API Evangelist pipeline from Rigetti's published OpenAPI, gRPC protos, client packages, and QCS documentation.
 
-Backed by: a16z
+**Areas:** Company · Quantum Computing · Quantum · Infrastructure · Developers · Cloud Computing · QPU
+
+## Rigetti & Co on APIs.io
+
+Everything profiled for Rigetti & Co is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/rigetti-and-co/](https://apis.io/providers/rigetti-and-co/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [Rigetti & Co Account API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-account-api/) — The account API from Rigetti & Co — 22 operation(s) for account.
+- [Rigetti & Co Authentication API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-authentication-api/) — The authentication API from Rigetti & Co — 4 operation(s) for authentication.
+- [Rigetti & Co Client Applications API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-clientapplications-api/) — Check for the latest SDK versions.
+- [Rigetti & Co Endpoints API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-endpoints-api/) — The Endpoint is the means of access to a Quantum Processor.
+- [Rigetti & Co Engagements API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-engagements-api/) — The Engagement is the authorization mechanism for access to the Quantum Processor.
+- [Rigetti & Co Quantum Processors API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-quantumprocessors-api/) — The Quantum Processor is the heart of the Rigetti services.
+- [Rigetti & Co Reservations API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-reservations-api/) — Find existing time on a Rigetti QPU and reserve it.
+- [Rigetti & Co Rigetti QCS API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-rigetti-qcs-api-api/) — The Rigetti QCS API API from Rigetti & Co — 2 operation(s) for rigetti qcs api.
+- [Rigetti & Co Health Check API](https://apis.io/apis/rigetti-and-co/rigetti-and-co-health-check-api/) — The Health Check API from Rigetti & Co — 1 operation(s) for health check.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [rigetti-qcs](https://apis.io/servers/rigetti-and-co/rigetti-qcs/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Rigetti And Co Agentic Access](https://apis.io/agentic-access/rigetti-and-co/rigetti-and-co-agentic-access/)
+
+#### Collections (9)
+
+Postman and Open Collection request collections.
+
+- [Rigetti QCS account API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-account-api/)
+- [Rigetti QCS account authentication API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-authentication-api/)
+- [Rigetti QCS account clientApplications API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-clientapplications-api/)
+- [Rigetti QCS account endpoints API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-endpoints-api/)
+- [Rigetti QCS account engagements API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-engagements-api/)
+- [Rigetti QCS account Healthcheck API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-healthcheck-api/)
+- [Rigetti QCS account quantumProcessors API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-quantumprocessors-api/)
+- [Rigetti QCS account reservations API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-reservations-api/)
+- [Rigetti QCS account Rigetti QCS API API](https://apis.io/collections/rigetti-and-co/open-rigetti-and-co-rigetti-qcs-api-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Rigetti And Co Qcs Overlay](https://apis.io/overlays/rigetti-and-co/rigetti-and-co-qcs-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Rigetti And Co Authentication](https://apis.io/security/rigetti-and-co/rigetti-and-co-authentication/)
+- [Rigetti And Co Domain Security](https://apis.io/security/rigetti-and-co/rigetti-and-co-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.rigetti.com)
+- [Documentation](https://docs.rigetti.com/qcs/)
+- [Getting started](https://docs.rigetti.com/qcs/getting-started)
+- [API reference](https://docs.rigetti.com/qcs/api-reference)
+- [Sign up](https://www.rigetti.com/get-quantum)
+- [Support](https://rigetti.zendesk.com)
+- [Changelog](https://docs.rigetti.com/qcs/changelog)
+- [Blog](https://www.rigetti.com/news)
+- [Terms of service](https://www.rigetti.com/terms)
+- [Privacy policy](https://www.rigetti.com/privacy-policy)
+- [GitHub](https://github.com/rigetti)
+
+## API Evangelist rating
+
+**Kin Score 36.8** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 50.3 |
+| Contract governance | 4.5 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 34.2 |
+
+**Agent readiness 29.0** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/rigetti-and-co/](https://apis.io/providers/rigetti-and-co/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Rigetti & Co: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/rigetti-and-co/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
